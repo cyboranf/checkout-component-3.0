@@ -4,8 +4,9 @@ import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,7 +21,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
@@ -30,6 +30,10 @@ public class JwtTokenProvider {
     private SecretKey jwtSecret;
     private final UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    public JwtTokenProvider(@Lazy UserDetailsServiceImpl userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
     @PostConstruct
     protected void init() {
         byte[] decodedKey = Base64.getDecoder().decode(secret.getBytes(StandardCharsets.UTF_8));
@@ -87,7 +91,7 @@ public class JwtTokenProvider {
                     .build()
                     .parseClaimsJws(token);
             return true;
-        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException | SignatureException |
+        } catch (MalformedJwtException | UnsupportedJwtException | IllegalArgumentException |
                  ExpiredJwtException e) {
             return false;
         }

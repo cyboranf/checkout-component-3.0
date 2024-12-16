@@ -1,13 +1,10 @@
 package com.component.checkout.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
-
 import java.util.Set;
 
-@Data
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 public class User {
 
     @Id
@@ -22,4 +19,37 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getLogin() {
+        return login;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+
+    public void setLogin(String login) {
+        this.login = login;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 }

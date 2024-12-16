@@ -1,9 +1,7 @@
 package com.component.checkout.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
-@Data
 @Entity
 @Table(name = "role")
 public class Role {
@@ -12,4 +10,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+
+    public String getName() {
+        return name;
+    }
 }
