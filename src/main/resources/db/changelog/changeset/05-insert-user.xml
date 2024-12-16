@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="05-insert-user" author="cyboran">
+        <insert tableName="user">
+            <column name="id" valueNumeric="1"/>
+            <column name="login" value="filip.cyboran"/>
+            <column name="password" value="$2a$10$dpmTGT9cfT2iSiRcfIfnuOiVxj2.15gJ1BXgec9d/yXgohtz/2wkO"/>
+        </insert>
+
+        <insert tableName="user_role">
+            <column name="user_id" valueNumeric="1"/>
+            <column name="role_id" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

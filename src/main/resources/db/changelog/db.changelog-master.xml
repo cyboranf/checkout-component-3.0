@@ -10,5 +10,7 @@
     <include file="changeset/01-create-user.xml" relativeToChangelogFile="true"/>
     <include file="changeset/02-create-role.xml" relativeToChangelogFile="true"/>
     <include file="changeset/03-create-user-role.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/04-insert-role.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/05-insert-user.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
