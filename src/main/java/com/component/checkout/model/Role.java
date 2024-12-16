@@ -1,4 +1,4 @@
-package com.component.checkout.infrastructure.model;
+package com.component.checkout.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
