@@ -36,11 +36,6 @@ public class User {
         return roles;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-
     public void setLogin(String login) {
         this.login = login;
     }
