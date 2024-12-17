@@ -5,7 +5,7 @@ import com.component.checkout.infrastructure.repository.UserRepository;
 import com.component.checkout.model.Role;
 import com.component.checkout.model.User;
 import com.component.checkout.presentation.mapper.UserMapper;
-import com.component.checkout.shared.AuthRequest;
+import com.component.checkout.presentation.dto.AuthRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,18 +26,32 @@ public class UserService {
     }
 
     @Transactional
-    public void registerUser(AuthRequest request) {
-        if (userRepository.findUserByLogin(request.login()) != null) {
+    public User registerUser(AuthRequest request) {
+        if (userExists(request.login())) {
             throw new IllegalArgumentException("User already exists with login: " + request.login());
         }
-        User user = UserMapper.authRequestToUser(request.login(), passwordEncoder.encode(request.password()));
-        Role userRole = roleRepository.findByName("ROLE_CLIENT")
-                .orElseThrow(() -> new IllegalArgumentException("Role not found"));
-        user.setRoles(Collections.singleton(userRole));
-        userRepository.save(user);
+
+        User user = createUserFromRequest(request);
+
+        return userRepository.save(user);
     }
 
     public User getUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
+    }
+
+    private boolean userExists(String login) {
+        return userRepository.findUserByLogin(login) != null;
+    }
+
+    private User createUserFromRequest(AuthRequest request) {
+        User user = UserMapper.authRequestToUser(request.login(), passwordEncoder.encode(request.password()));
+        user.setRoles(Collections.singleton(getUserRole()));
+        return user;
+    }
+
+    private Role getUserRole() {
+        return roleRepository.findByName("ROLE_CLIENT")
+                .orElseThrow(() -> new IllegalArgumentException("Role 'ROLE_CLIENT' not found"));
     }
 }

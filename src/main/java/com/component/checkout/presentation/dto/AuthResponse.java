@@ -1,7 +1,8 @@
-package com.component.checkout.shared;
+package com.component.checkout.presentation.dto;
 
 public class AuthResponse {
 
+    private Long userId;
     private boolean success;
     private String message;
     private String token;
@@ -11,10 +12,25 @@ public class AuthResponse {
         this.message = message;
     }
 
-    public AuthResponse(boolean success, String message, String token) {
+    public AuthResponse(Long userId, boolean success, String message, String token) {
+        this.userId = userId;
         this.success = success;
         this.message = message;
         this.token = token;
+    }
+
+    public AuthResponse(Long userId, boolean success, String message) {
+        this.userId = userId;
+        this.success = success;
+        this.message = message;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public boolean isSuccess() {

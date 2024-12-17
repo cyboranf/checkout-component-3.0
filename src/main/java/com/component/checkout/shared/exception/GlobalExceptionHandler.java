@@ -1,6 +1,6 @@
-package com.component.checkout.presentation.exception;
+package com.component.checkout.shared.exception;
 
-import com.component.checkout.shared.AuthResponse;
+import com.component.checkout.presentation.dto.AuthResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,18 +13,19 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+    private static final HttpStatus BAD_REQUEST_STATUS = HttpStatus.BAD_REQUEST;
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach(error ->
                 errors.put(error.getField(), error.getDefaultMessage()));
-        return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(BAD_REQUEST_STATUS).body(errors);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<AuthResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
         AuthResponse response = new AuthResponse(false, ex.getMessage());
-        return ResponseEntity.badRequest().body(response);
+        return ResponseEntity.status(BAD_REQUEST_STATUS).body(response);
     }
 }

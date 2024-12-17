@@ -1,13 +1,13 @@
 package com.component.checkout.presentation.mapper;
 
 import com.component.checkout.model.User;
-import com.component.checkout.shared.AuthResponse;
+import com.component.checkout.presentation.dto.AuthResponse;
 
 public class UserMapper {
 
     public static AuthResponse userToAuthResponse(User user, String token) {
         if (token != null) {
-            return new AuthResponse(true, "Authentication successful", token);
+            return new AuthResponse(user.getId(), true, "Authentication successful", token);
         } else {
             return new AuthResponse(true, "Registration successful");
         }
