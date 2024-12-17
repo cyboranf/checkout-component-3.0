@@ -32,8 +32,13 @@ public class AuthController {
     }
 
     @RequestMapping(method = RequestMethod.OPTIONS)
-    public ResponseEntity<?> options() {
-        return ResponseEntity.ok().build();
+    public ResponseEntity<Void> options() {
+        return ResponseEntity.ok()
+                .header("Allow", "OPTIONS, POST")
+                .header("Access-Control-Allow-Methods", "POST, OPTIONS")
+                .header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+                .header("Access-Control-Allow-Origin", "*")
+                .build();
     }
 
     @PostMapping("/sign-up")
