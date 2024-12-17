@@ -1,4 +1,4 @@
-package com.component.checkout.infrastructure;
+package com.component.checkout.infrastructure.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
