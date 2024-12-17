@@ -14,4 +14,7 @@
     <include file="changeset/05-insert-user.xml" relativeToChangelogFile="true"/>
     <include file="changeset/06-create-item.xml" relativeToChangelogFile="true"/>
     <include file="changeset/07-insert-item.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/08-create-cart.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/09-create-cart-item.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/10-create-receipt.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
