@@ -47,3 +47,21 @@ java -jar target/checkout-0.0.1-SNAPSHOT.jar
 ```bash
 java -jar target/checkout-0.0.1-SNAPSHOT.jar --spring.profiles.active=production
 ```
+
+## Swagger Documentation
+
+Follow these steps to explore the API in a more interactive format:
+
+1. Open your web browser and navigate to the URL above to access the Swagger API JSON specification.
+
+2. Copy the JSON content displayed in your browser.
+
+3. Go to the Swagger Editor available at:
+
+   https://editor.swagger.io/
+
+4. Paste the copied JSON content into the editor.
+
+5. When prompted with the question: "Would you like to convert your JSON into YAML?", click **OK**.
+
+This will convert the JSON specification into YAML format, allowing you to explore and validate the API schema using the Swagger Editor's interactive interface.
