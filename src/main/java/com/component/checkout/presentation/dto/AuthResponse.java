@@ -7,6 +7,9 @@ public class AuthResponse {
     private String message;
     private String token;
 
+    public AuthResponse() {
+    }
+
     public AuthResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
@@ -55,5 +58,15 @@ public class AuthResponse {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    @Override
+    public String toString() {
+        return "AuthResponse{" +
+                "userId=" + userId +
+                ", success=" + success +
+                ", message='" + message + '\'' +
+                ", token='" + token + '\'' +
+                '}';
     }
 }
