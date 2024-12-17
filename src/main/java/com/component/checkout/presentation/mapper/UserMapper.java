@@ -6,17 +6,22 @@ import com.component.checkout.presentation.dto.AuthResponse;
 public class UserMapper {
 
     public static AuthResponse userToAuthResponse(User user, String token) {
+        AuthResponse.Builder builder = new AuthResponse.Builder()
+                .withUserId(user.getId())
+                .withSuccess(true)
+                .withMessage(token != null ? "Authentication successful" : "Registration successful");
+
         if (token != null) {
-            return new AuthResponse(user.getId(), true, "Authentication successful", token);
-        } else {
-            return new AuthResponse(true, "Registration successful");
+            builder.withToken(token);
         }
+
+        return builder.build();
     }
 
     public static User authRequestToUser(String login, String password) {
-        User user = new User();
-        user.setLogin(login);
-        user.setPassword(password);
-        return user;
+        return new User.Builder()
+                .withLogin(login)
+                .withPassword(password)
+                .build();
     }
 }

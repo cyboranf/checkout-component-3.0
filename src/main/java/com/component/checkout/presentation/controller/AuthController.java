@@ -45,7 +45,11 @@ public class AuthController {
     public ResponseEntity<AuthResponse> signUp(@Valid @RequestBody AuthRequest request) {
         try {
             User user = userService.registerUser(request);
-            AuthResponse response = new AuthResponse(user.getId(), true, "Registration successful");
+            AuthResponse response = new AuthResponse.Builder()
+                    .withUserId(user.getId())
+                    .withSuccess(true)
+                    .withMessage("Registration successful")
+                    .build();
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return handleErrorResponse(e.getMessage());
@@ -77,7 +81,10 @@ public class AuthController {
     }
 
     private ResponseEntity<AuthResponse> handleErrorResponse(String message, HttpStatus status) {
-        AuthResponse response = new AuthResponse(false, message);
+        AuthResponse response = new AuthResponse.Builder()
+                .withSuccess(false)
+                .withMessage(message)
+                .build();
         return ResponseEntity.status(status).body(response);
     }
 }

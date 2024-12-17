@@ -29,7 +29,7 @@ public class CartService {
 
     public CartDto addItemToCart(Long cartId, Long itemId, int quantity) {
         Cart cart = findCartById(cartId);
-        Item item =findItemById(itemId);
+        Item item = findItemById(itemId);
 
         Optional<CartItem> existingCartItem = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getItem().getId().equals(itemId))
@@ -46,14 +46,14 @@ public class CartService {
             cart.getCartItems().add(cartItem);
         }
 
-        calculateCartTotal(cart);
+        cart.setTotalPrice(calculateCartTotal(cart));
 
         Cart savedCart = cartRepository.save(cart);
 
         return CartMapper.toDto(savedCart);
     }
 
-    private void calculateCartTotal(Cart cart) {
+    private double calculateCartTotal(Cart cart) {
         double total = 0;
 
         for (CartItem cartItem : cart.getCartItems()) {
@@ -70,7 +70,7 @@ public class CartService {
             }
         }
 
-        cart.setTotalPrice(total);
+        return total;
     }
 
     public Receipt checkoutCart(Long cartId) {

@@ -25,7 +25,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<AuthResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        AuthResponse response = new AuthResponse(false, ex.getMessage());
+        AuthResponse response = new AuthResponse.Builder()
+                .withSuccess(false)
+                .withMessage(ex.getMessage())
+                .build();
         return ResponseEntity.status(BAD_REQUEST_STATUS).body(response);
     }
 }

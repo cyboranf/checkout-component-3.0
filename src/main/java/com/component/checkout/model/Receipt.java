@@ -26,35 +26,86 @@ public class Receipt {
     @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
     private double totalAmount;
 
-    public Long getId() {
-        return id;
+    public Receipt() {
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    private Receipt(Builder builder) {
+        this.id = builder.id;
+        this.issuedAt = builder.issuedAt;
+        this.purchasedItems = builder.purchasedItems;
+        this.totalAmount = builder.totalAmount;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Date getIssuedAt() {
         return issuedAt;
     }
 
-    public void setIssuedAt(Date issuedAt) {
-        this.issuedAt = issuedAt;
-    }
-
     public List<CartItem> getPurchasedItems() {
         return purchasedItems;
-    }
-
-    public void setPurchasedItems(List<CartItem> purchasedItems) {
-        this.purchasedItems = purchasedItems;
     }
 
     public double getTotalAmount() {
         return totalAmount;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setIssuedAt(Date issuedAt) {
+        this.issuedAt = issuedAt;
+    }
+
+    public void setPurchasedItems(List<CartItem> purchasedItems) {
+        this.purchasedItems = purchasedItems;
+    }
+
     public void setTotalAmount(double totalAmount) {
         this.totalAmount = totalAmount;
+    }
+
+    public static class Builder {
+        private Long id;
+        private Date issuedAt;
+        private List<CartItem> purchasedItems;
+        private double totalAmount;
+
+        public Builder withId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder withIssuedAt(Date issuedAt) {
+            this.issuedAt = issuedAt;
+            return this;
+        }
+
+        public Builder withPurchasedItems(List<CartItem> purchasedItems) {
+            this.purchasedItems = purchasedItems;
+            return this;
+        }
+
+        public Builder withTotalAmount(double totalAmount) {
+            this.totalAmount = totalAmount;
+            return this;
+        }
+
+        public Receipt build() {
+            return new Receipt(this);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Receipt{" +
+                "id=" + id +
+                ", issuedAt=" + issuedAt +
+                ", purchasedItems=" + purchasedItems +
+                ", totalAmount=" + totalAmount +
+                '}';
     }
 }
