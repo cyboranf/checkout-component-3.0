@@ -33,19 +33,19 @@ class AuthControllerIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        if (!roleRepository.findByName("ROLE_CLIENT").isPresent()) {
+        if (roleRepository.findByName("ROLE_CLIENT").isEmpty()) {
             Role roleClient = new Role("ROLE_CLIENT");
             roleRepository.save(roleClient);
         }
     }
 
     @Test
-    void testSignUp_Success() {
+    void testRegister_Success() {
         String uniqueLogin = "filip" + UUID.randomUUID();
-        AuthRequest request = new AuthRequest(uniqueLogin, "filip.cyboran2");
+        AuthRequest request = new AuthRequest(uniqueLogin, "password123");
 
         ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/sign-up",
+                "http://localhost:" + port + "/api/auth/register",
                 request,
                 AuthResponse.class
         );
@@ -53,16 +53,16 @@ class AuthControllerIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody().isSuccess()).isTrue();
-        assertThat(response.getBody().getMessage()).isEqualTo("Registration successful");
+        assertThat(response.getBody().getMessage()).isEqualTo("Registration successful.");
     }
 
     @Test
-    void testSignUp_Failure_WhenUserExists() {
-        String uniqueLogin = "filip.cyboran_" + UUID.randomUUID();
-        AuthRequest request = new AuthRequest(uniqueLogin, "filip.cyboran");
+    void testRegister_Failure_WhenUserExists() {
+        String uniqueLogin = "duplicateUser_" + UUID.randomUUID();
+        AuthRequest request = new AuthRequest(uniqueLogin, "password123");
 
         ResponseEntity<AuthResponse> firstResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/sign-up",
+                "http://localhost:" + port + "/api/auth/register",
                 request,
                 AuthResponse.class
         );
@@ -72,7 +72,7 @@ class AuthControllerIntegrationTest {
         assertThat(firstResponse.getBody().isSuccess()).isTrue();
 
         ResponseEntity<AuthResponse> secondResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/sign-up",
+                "http://localhost:" + port + "/api/auth/register",
                 request,
                 AuthResponse.class
         );
@@ -86,20 +86,21 @@ class AuthControllerIntegrationTest {
     @Test
     void testLogin_Success() {
         String uniqueLogin = "loginUser_" + UUID.randomUUID();
-        AuthRequest signUpRequest = new AuthRequest(uniqueLogin, "password123");
-        ResponseEntity<AuthResponse> signUpResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/sign-up",
-                signUpRequest,
+        AuthRequest registerRequest = new AuthRequest(uniqueLogin, "password123");
+
+        ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
+                "http://localhost:" + port + "/api/auth/register",
+                registerRequest,
                 AuthResponse.class
         );
 
-        assertThat(signUpResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(signUpResponse.getBody()).isNotNull();
-        assertThat(signUpResponse.getBody().isSuccess()).isTrue();
+        assertThat(registerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(registerResponse.getBody()).isNotNull();
+        assertThat(registerResponse.getBody().isSuccess()).isTrue();
 
         ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
                 "http://localhost:" + port + "/api/auth/login",
-                signUpRequest,
+                registerRequest,
                 AuthResponse.class
         );
 

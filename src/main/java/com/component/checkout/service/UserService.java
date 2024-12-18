@@ -75,7 +75,10 @@ public class UserService {
 
     private Role initializeUserRole() {
         return roleRepository.findByName("ROLE_CLIENT")
-                .orElseThrow(() -> new IllegalArgumentException("Role 'ROLE_CLIENT' not found"));
+                .orElseGet(() -> {
+                    Role newRole = new Role("ROLE_CLIENT");
+                    return roleRepository.save(newRole);
+                });
     }
 
     private User getUserByLogin(String login) {
