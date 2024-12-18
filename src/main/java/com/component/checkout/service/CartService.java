@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,14 +78,27 @@ public class CartService {
      * This method clears the cart after checkout and generates a receipt with purchased items and total amount.
      */
     @Transactional
-    public ReceiptDto checkoutCart(Long cartId) {
-        Cart cart = findCartById(cartId);
+    public ReceiptDto checkoutCart(HttpServletRequest request) {
+        User user = securityService.getAuthenticatedUser(request);
+        Cart cart = user.getCart();
 
         Receipt receipt = new Receipt.Builder()
                 .withIssuedAt(timeProvider.nowDate())
-                .withPurchasedItems(cart.getCartItems())
                 .withTotalAmount(cart.getTotalPrice())
                 .build();
+
+        List<CartItem> copiedItems = cart.getCartItems().stream()
+                .map(cartItem -> {
+                    CartItem copiedItem = new CartItem.Builder()
+                            .withItem(cartItem.getItem())
+                            .withQuantity(cartItem.getQuantity())
+                            .build();
+                    copiedItem.setCart(null);
+                    return copiedItem;
+                })
+                .toList();
+
+        receipt.setPurchasedItems(copiedItems);
 
         cart.getCartItems().clear();
         cart.setTotalPrice(0);
@@ -99,8 +113,10 @@ public class CartService {
      *
      * This method retrieves the current state of the cart for viewing.
      */
-    public CartDto viewCart(Long cartId) {
-        return CartMapper.toDto(findCartById(cartId));
+    public CartDto viewCart(HttpServletRequest request) {
+        User user = securityService.getAuthenticatedUser(request);
+        Cart cart = user.getCart();
+        return CartMapper.toDto(cart);
     }
 
     /**

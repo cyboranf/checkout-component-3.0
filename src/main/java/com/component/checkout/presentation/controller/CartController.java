@@ -1,6 +1,5 @@
 package com.component.checkout.presentation.controller;
 
-import com.component.checkout.model.User;
 import com.component.checkout.presentation.dto.cart.CartDto;
 import com.component.checkout.presentation.dto.cart.CartResponse;
 import com.component.checkout.presentation.dto.receipt.ReceiptDto;
@@ -36,22 +35,22 @@ public class CartController {
     @PostMapping("/items")
     public ResponseEntity<CartResponse> addItemToCart(
             @RequestParam @NotNull Long itemId,
-            @RequestParam @Min(1) int quantity,
+            @RequestParam @Min(value = 1, message = "Quantity must be at least 1") int quantity,
             HttpServletRequest request) {
 
         CartDto cartDto = cartService.addItemToCart(itemId, quantity, request);
         return ResponseUtil.buildSuccessResponse(cartDto, "Item added successfully to the cart.");
     }
 
-    @GetMapping("/{cartId}")
-    public ResponseEntity<CartResponse> viewCart(@PathVariable @NotNull Long cartId) {
-        CartDto cartDto = cartService.viewCart(cartId);
-        return ResponseUtil.buildSuccessResponse(cartDto, "Cart retrieved successfully.");
+    @PostMapping("/checkout")
+    public ResponseEntity<ReceiptResponse> checkoutCart(HttpServletRequest request) {
+        ReceiptDto receiptDto = cartService.checkoutCart(request);
+        return ResponseUtil.buildSuccessResponse(receiptDto, "Cart checked out successfully. Receipt generated.");
     }
 
-    @PostMapping("/{cartId}/checkout")
-    public ResponseEntity<ReceiptResponse> checkoutCart(@PathVariable @NotNull Long cartId) {
-        ReceiptDto receiptDto = cartService.checkoutCart(cartId);
-        return ResponseUtil.buildSuccessResponse(receiptDto, "Cart checked out successfully. Receipt generated.");
+    @GetMapping
+    public ResponseEntity<CartResponse> viewCart(HttpServletRequest request) {
+        CartDto cartDto = cartService.viewCart(request);
+        return ResponseUtil.buildSuccessResponse(cartDto, "Cart retrieved successfully.");
     }
 }

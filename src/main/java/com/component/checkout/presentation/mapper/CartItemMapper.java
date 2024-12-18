@@ -9,7 +9,7 @@ public class CartItemMapper {
         return new CartItemDto.Builder()
                 .withCartItemId(cartItem.getId())
                 .withItemId(cartItem.getItem().getId())
-                .withCartId(cartItem.getCart().getId())
+                .withCartId(cartItem.getCart() != null ? cartItem.getCart().getId() : null)
                 .withQuantity(cartItem.getQuantity())
                 .build();
     }

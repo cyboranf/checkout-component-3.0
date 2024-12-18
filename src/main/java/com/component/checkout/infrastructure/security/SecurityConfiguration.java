@@ -40,16 +40,26 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 
                         .requestMatchers(HttpMethod.POST, "/api/cart/items").hasAuthority("ROLE_CLIENT")
-                        .requestMatchers(HttpMethod.GET, "/api/cart/{cartId}").hasAuthority("ROLE_CLIENT")
-                        .requestMatchers(HttpMethod.POST, "/api/cart/{cartId}/checkout").hasAuthority("ROLE_CLIENT")
+                        .requestMatchers(HttpMethod.GET, "/api/cart").hasAuthority("ROLE_CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/cart/checkout").hasAuthority("ROLE_CLIENT")
 
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint((request, response, authException) ->
-                                response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized"))
-                        .accessDeniedHandler((request, response, accessDeniedException) ->
-                                response.sendError(HttpStatus.FORBIDDEN.value(), "Forbidden"))
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write(
+                                    "{\"success\":false,\"message\":\"Unauthorized access: " + authException.getMessage() + "\"}"
+                            );
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.setContentType("application/json");
+                            response.getWriter().write(
+                                    "{\"success\":false,\"message\":\"Access denied: " + accessDeniedException.getMessage() + "\"}"
+                            );
+                        })
                 )
                 .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
