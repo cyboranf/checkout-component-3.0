@@ -1,5 +1,6 @@
 package com.component.checkout.infrastructure.security;
 
+import com.component.checkout.service.TimeProvider;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
@@ -31,12 +32,15 @@ public class JwtTokenProvider {
 
     private SecretKey jwtSecret;
 
+    private final TimeProvider timeProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public JwtTokenProvider(@Lazy UserDetailsServiceImpl userDetailsService) {
+    public JwtTokenProvider(TimeProvider timeProvider, @Lazy UserDetailsServiceImpl userDetailsService) {
+        this.timeProvider = timeProvider;
         this.userDetailsService = userDetailsService;
     }
+
     @PostConstruct
     private void init() {
         jwtSecret = generateSecretKey(secret);
@@ -44,7 +48,7 @@ public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
-        Date now = new Date();
+        Date now = timeProvider.nowDate();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()
@@ -103,7 +107,7 @@ public class JwtTokenProvider {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if ("client".equals(cookie.getName())) {
+                if ("jwt_token".equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
@@ -120,7 +124,9 @@ public class JwtTokenProvider {
     }
 
     private Collection<? extends GrantedAuthority> extractAuthorities(Claims claims) {
-        return ((List<String>) claims.get("roles")).stream()
+        List<String> roles = (List<String>) claims.get("roles");
+        return roles.stream()
+                .map(role -> role.startsWith("ROLE_") ? role : "ROLE_" + role) // Ensure "ROLE_" prefix
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

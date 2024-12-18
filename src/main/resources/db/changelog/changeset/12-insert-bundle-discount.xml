@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+    http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="12-insert-bundle-discount" author="filip.cyboran">
+        <insert tableName="bundle_discount">
+            <column name="primary_item_id" value="1"/>
+            <column name="bundled_item_id" value="2"/>
+            <column name="discount" value="0.8"/>
+        </insert>
+        <insert tableName="bundle_discount">
+            <column name="primary_item_id" value="3"/>
+            <column name="bundled_item_id" value="4"/>
+            <column name="discount" value="0.5"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

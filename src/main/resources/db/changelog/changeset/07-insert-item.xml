@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="07-insert-items" author="filip.cyboran">
+        <insert tableName="item">
+            <column name="name" value="A"/>
+            <column name="normal_price" value="40"/>
+            <column name="required_quantity_for_special_price" value="3"/>
+            <column name="special_price" value="30"/>
+        </insert>
+        <insert tableName="item">
+            <column name="name" value="B"/>
+            <column name="normal_price" value="10"/>
+            <column name="required_quantity_for_special_price" value="2"/>
+            <column name="special_price" value="7.5"/>
+        </insert>
+        <insert tableName="item">
+            <column name="name" value="C"/>
+            <column name="normal_price" value="30"/>
+            <column name="required_quantity_for_special_price" value="4"/>
+            <column name="special_price" value="20"/>
+        </insert>
+        <insert tableName="item">
+            <column name="name" value="D"/>
+            <column name="normal_price" value="25"/>
+            <column name="required_quantity_for_special_price" value="2"/>
+            <column name="special_price" value="23.5"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

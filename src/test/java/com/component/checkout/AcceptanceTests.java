@@ -2,9 +2,8 @@ package com.component.checkout;
 
 import com.component.checkout.infrastructure.repository.RoleRepository;
 import com.component.checkout.model.Role;
-import com.component.checkout.presentation.dto.AuthRequest;
-import com.component.checkout.presentation.dto.AuthResponse;
-import jakarta.transaction.Transactional;
+import com.component.checkout.presentation.dto.auth.AuthRequest;
+import com.component.checkout.presentation.dto.auth.AuthResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ class AcceptanceTests {
 
     @BeforeEach
     void setUp() {
-        if (!roleRepository.findByName("ROLE_CLIENT").isPresent()) {
+        if (roleRepository.findByName("ROLE_CLIENT").isEmpty()) {
             Role roleClient = new Role("ROLE_CLIENT");
             roleRepository.save(roleClient);
         }
@@ -42,30 +41,20 @@ class AcceptanceTests {
 
     @Test
     void testCompleteWorkflow() {
-        String uniqueLogin = "filip.cyboran_" + UUID.randomUUID();
-        AuthRequest registerRequest = new AuthRequest(uniqueLogin, "filip.cyboran33");
+        String uniqueLogin = "user_" + UUID.randomUUID();
+        AuthRequest registerRequest = new AuthRequest(uniqueLogin, "securePassword123");
 
         // Step 1: Register
         ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/sign-up",
+                "http://localhost:" + port + "/api/auth/register",
                 registerRequest,
                 AuthResponse.class
         );
 
-        if (registerResponse.getStatusCode() != HttpStatus.OK) {
-            AuthResponse response = registerResponse.getBody();
-            System.out.println("Register failed with status: " + registerResponse.getStatusCode());
-            if (response != null) {
-                System.out.println("Response Body: success=" + response.isSuccess() + ", message=" + response.getMessage());
-            } else {
-                System.out.println("Response Body is null");
-            }
-        }
-
         assertThat(registerResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(registerResponse.getBody()).isNotNull();
         assertThat(registerResponse.getBody().isSuccess()).isTrue();
-        assertThat(registerResponse.getBody().getMessage()).isEqualTo("Registration successful");
+        assertThat(registerResponse.getBody().getMessage()).isEqualTo("Registration successful.");
 
         // Step 2: Login
         ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
@@ -73,16 +62,6 @@ class AcceptanceTests {
                 registerRequest,
                 AuthResponse.class
         );
-
-        if (loginResponse.getStatusCode() != HttpStatus.OK) {
-            AuthResponse response = loginResponse.getBody();
-            System.out.println("Login failed with status: " + loginResponse.getStatusCode());
-            if (response != null) {
-                System.out.println("Response Body: success=" + response.isSuccess() + ", message=" + response.getMessage());
-            } else {
-                System.out.println("Response Body is null");
-            }
-        }
 
         assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(loginResponse.getBody()).isNotNull();
