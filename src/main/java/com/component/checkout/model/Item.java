@@ -1,5 +1,6 @@
 package com.component.checkout.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -22,6 +23,7 @@ public class Item {
     private double specialPrice;
 
     @OneToMany(mappedBy = "primaryItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private Set<BundleDiscount> bundleDiscounts;
 
     public Item() {

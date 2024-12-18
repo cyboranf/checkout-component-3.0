@@ -23,6 +23,9 @@ public class User {
     )
     private Set<Role> roles;
 
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "user", orphanRemoval = true)
+    private Cart cart;
+
     public User() {
     }
 
@@ -31,6 +34,7 @@ public class User {
         this.login = builder.login;
         this.password = builder.password;
         this.roles = builder.roles;
+        this.cart = builder.cart;
     }
 
     public Long getId() {
@@ -49,6 +53,14 @@ public class User {
         return roles;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setLogin(String login) {
         this.login = login;
     }
@@ -61,11 +73,16 @@ public class User {
         this.roles = roles;
     }
 
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
     public static class Builder {
         private Long id;
         private String login;
         private String password;
         private Set<Role> roles;
+        private Cart cart;
 
         public Builder withId(Long id) {
             this.id = id;
@@ -87,6 +104,11 @@ public class User {
             return this;
         }
 
+        public Builder withCart(Cart cart) {
+            this.cart = cart;
+            return this;
+        }
+
         public User build() {
             return new User(this);
         }
@@ -99,6 +121,7 @@ public class User {
                 ", login='" + login + '\'' +
                 ", password='[PROTECTED]'" +
                 ", roles=" + roles +
+                ", cart=" + cart +
                 '}';
     }
 }

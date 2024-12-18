@@ -19,4 +19,5 @@
     <include file="changeset/10-create-receipt.xml" relativeToChangelogFile="true"/>
     <include file="changeset/11-create-bundle-discount.xml" relativeToChangelogFile="true"/>
     <include file="changeset/12-insert-bundle-discount.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/13-add-cart-user-relation.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

@@ -1,13 +1,17 @@
 package com.component.checkout.service;
 
+import com.component.checkout.infrastructure.repository.CartRepository;
 import com.component.checkout.infrastructure.repository.RoleRepository;
 import com.component.checkout.infrastructure.repository.UserRepository;
 import com.component.checkout.infrastructure.security.JwtTokenProvider;
+import com.component.checkout.model.Cart;
 import com.component.checkout.model.Role;
 import com.component.checkout.model.User;
 import com.component.checkout.presentation.dto.auth.AuthResponse;
 import com.component.checkout.presentation.mapper.UserMapper;
 import com.component.checkout.presentation.dto.auth.AuthRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,13 +27,15 @@ public class UserService {
     private final Role userRole;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final CartRepository cartRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
+    public UserService(UserRepository userRepository, RoleRepository roleRepository, CartRepository cartRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.cartRepository = cartRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.authenticationManager = authenticationManager;
@@ -43,16 +49,17 @@ public class UserService {
         }
 
         User user = createUserFromRequest(request);
-        User savedUser = userRepository.save(user);
 
-        return UserMapper.toAuthResponse(savedUser);
+        return UserMapper.toAuthResponse(userRepository.save(user));
     }
 
-    public AuthResponse login(AuthRequest request) {
+    @Transactional
+    public AuthResponse login(AuthRequest request, HttpServletResponse response) {
         Authentication authentication = authenticateUser(request);
         if (authentication == null || authentication.getPrincipal() == null) {
             throw new IllegalStateException("Authentication failed or returned a null principal.");
         }
+
         String token = jwtTokenProvider.generateToken(authentication);
         User user = getUserByLogin(request.login());
 
@@ -60,7 +67,27 @@ public class UserService {
             throw new IllegalStateException("Failed to generate JWT token.");
         }
 
+        createCartIfNotExists(user);
+
+        Cookie cookie = new Cookie("jwt_token", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(3600);
+        response.addCookie(cookie);
+
         return UserMapper.toAuthResponse(user, token);
+    }
+
+    protected void createCartIfNotExists(User user) {
+        if (user.getCart() == null) {
+            Cart cart = new Cart.Builder()
+                    .withUser(user)
+                    .withCartItems(Collections.emptyList())
+                    .withTotalPrice(0.0)
+                    .build();
+            cartRepository.save(cart);
+        }
     }
 
     private boolean userExists(String login) {

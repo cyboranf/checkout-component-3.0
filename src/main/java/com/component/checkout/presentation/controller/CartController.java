@@ -1,11 +1,13 @@
 package com.component.checkout.presentation.controller;
 
+import com.component.checkout.model.User;
 import com.component.checkout.presentation.dto.cart.CartDto;
 import com.component.checkout.presentation.dto.cart.CartResponse;
 import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 import com.component.checkout.presentation.dto.receipt.ReceiptResponse;
 import com.component.checkout.service.CartService;
 import com.component.checkout.shared.utils.ResponseUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
@@ -31,13 +33,13 @@ public class CartController {
                 .build();
     }
 
-    @PostMapping("/{cartId}/items")
+    @PostMapping("/items")
     public ResponseEntity<CartResponse> addItemToCart(
-            @PathVariable @NotNull Long cartId,
             @RequestParam @NotNull Long itemId,
-            @RequestParam @Min(1) int quantity) {
+            @RequestParam @Min(1) int quantity,
+            HttpServletRequest request) {
 
-        CartDto cartDto = cartService.addItemToCart(cartId, itemId, quantity);
+        CartDto cartDto = cartService.addItemToCart(itemId, quantity, request);
         return ResponseUtil.buildSuccessResponse(cartDto, "Item added successfully to the cart.");
     }
 

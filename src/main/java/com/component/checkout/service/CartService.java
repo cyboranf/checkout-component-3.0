@@ -8,6 +8,7 @@ import com.component.checkout.presentation.dto.cart.CartDto;
 import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 import com.component.checkout.presentation.mapper.CartMapper;
 import com.component.checkout.presentation.mapper.ReceiptMapper;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,11 @@ public class CartService {
     private final TimeProvider timeProvider;
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
+    private final SecurityService securityService;
     private final ReceiptRepository receiptRepository;
 
-    public CartService(TimeProvider timeProvider, CartRepository cartRepository, ItemRepository itemRepository, ReceiptRepository receiptRepository) {
+    public CartService(SecurityService securityService, TimeProvider timeProvider, CartRepository cartRepository, ItemRepository itemRepository, ReceiptRepository receiptRepository) {
+        this.securityService = securityService;
         this.timeProvider = timeProvider;
         this.cartRepository = cartRepository;
         this.itemRepository = itemRepository;
@@ -39,8 +42,9 @@ public class CartService {
      * This method adds items to the cart, updates the cart's state, and recalculates the total price.
      */
     @Transactional
-    public CartDto addItemToCart(Long cartId, Long itemId, int quantity) {
-        Cart cart = findCartById(cartId);
+    public CartDto addItemToCart(Long itemId, int quantity, HttpServletRequest request) {
+        User user = securityService.getAuthenticatedUser(request);
+        Cart cart = user.getCart();
         Item item = findItemById(itemId);
 
         Optional<CartItem> existingCartItem = cart.getCartItems().stream()

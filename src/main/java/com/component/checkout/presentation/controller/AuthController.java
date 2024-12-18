@@ -4,6 +4,7 @@ import com.component.checkout.presentation.dto.auth.AuthRequest;
 import com.component.checkout.presentation.dto.auth.AuthResponse;
 import com.component.checkout.service.UserService;
 import com.component.checkout.shared.utils.ResponseUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +30,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest) {
-        AuthResponse authResponse = authService.login(authRequest);
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest,
+                                              HttpServletResponse response) {
+        AuthResponse authResponse = authService.login(authRequest, response);
         return ResponseUtil.buildSuccessResponseAuth(authResponse, "Login successful.");
     }
 

@@ -13,6 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.List;
 
@@ -20,10 +21,10 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    public SecurityConfiguration(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public SecurityConfiguration(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Bean
@@ -38,9 +39,9 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/cart/{cartId}/items").hasRole("USER")
-                        .requestMatchers(HttpMethod.GET, "/api/cart/{cartId}").hasRole("USER")
-                        .requestMatchers(HttpMethod.POST, "/api/cart/{cartId}/checkout").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/cart/items").hasAuthority("ROLE_CLIENT")
+                        .requestMatchers(HttpMethod.GET, "/api/cart/{cartId}").hasAuthority("ROLE_CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/cart/{cartId}/checkout").hasAuthority("ROLE_CLIENT")
 
                         .anyRequest().authenticated()
                 )
@@ -49,7 +50,9 @@ public class SecurityConfiguration {
                                 response.sendError(HttpStatus.UNAUTHORIZED.value(), "Unauthorized"))
                         .accessDeniedHandler((request, response, accessDeniedException) ->
                                 response.sendError(HttpStatus.FORBIDDEN.value(), "Forbidden"))
-                );
+                )
+                .addFilterBefore(new JwtTokenFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
