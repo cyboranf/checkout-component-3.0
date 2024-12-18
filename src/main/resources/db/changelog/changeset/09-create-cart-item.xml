@@ -23,6 +23,8 @@
             <column name="quantity_normal_price" type="INT" defaultValue="0"/>
             <column name="single_special_price" type="decimal(10,2)" defaultValue="0.00"/>
             <column name="quantity_special_price" type="INT" defaultValue="0"/>
+            <column name="bundle_discount" type="decimal(10,2)" defaultValue="0.00"/>
+            <column name="bundle_discount_quantity" type="INT" defaultValue="0"/>
         </createTable>
 
         <addForeignKeyConstraint

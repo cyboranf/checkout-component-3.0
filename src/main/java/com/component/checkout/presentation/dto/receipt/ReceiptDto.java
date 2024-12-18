@@ -1,6 +1,6 @@
 package com.component.checkout.presentation.dto.receipt;
 
-import com.component.checkout.presentation.dto.cartItem.CartItemDto;
+import com.component.checkout.presentation.dto.promotion.ReceiptDiscountDto;
 
 import java.util.Date;
 import java.util.List;
@@ -9,46 +9,46 @@ public class ReceiptDto {
 
     private Long receiptId;
     private Date issuedAt;
-    private List<CartItemDto> purchasedItems;
-    private double totalAmount;
+    private List<PurchasedItemDto> purchasedItems;
+    private ReceiptDiscountDto receiptDiscount;
 
     public Long getReceiptId() {
         return receiptId;
-    }
-
-    public Date getIssuedAt() {
-        return issuedAt;
-    }
-
-    public List<CartItemDto> getPurchasedItems() {
-        return purchasedItems;
-    }
-
-    public double getTotalAmount() {
-        return totalAmount;
     }
 
     public void setReceiptId(Long receiptId) {
         this.receiptId = receiptId;
     }
 
+    public Date getIssuedAt() {
+        return issuedAt;
+    }
+
     public void setIssuedAt(Date issuedAt) {
         this.issuedAt = issuedAt;
     }
 
-    public void setPurchasedItems(List<CartItemDto> purchasedItems) {
+    public List<PurchasedItemDto> getPurchasedItems() {
+        return purchasedItems;
+    }
+
+    public void setPurchasedItems(List<PurchasedItemDto> purchasedItems) {
         this.purchasedItems = purchasedItems;
     }
 
-    public void setTotalAmount(double totalAmount) {
-        this.totalAmount = totalAmount;
+    public ReceiptDiscountDto getReceiptDiscount() {
+        return receiptDiscount;
+    }
+
+    public void setReceiptDiscount(ReceiptDiscountDto receiptDiscount) {
+        this.receiptDiscount = receiptDiscount;
     }
 
     public static class Builder {
         private Long receiptId;
         private Date issuedAt;
-        private List<CartItemDto> purchasedItems;
-        private double totalAmount;
+        private List<PurchasedItemDto> purchasedItems;
+        private ReceiptDiscountDto receiptDiscount;
 
         public Builder withReceiptId(Long receiptId) {
             this.receiptId = receiptId;
@@ -60,13 +60,13 @@ public class ReceiptDto {
             return this;
         }
 
-        public Builder withPurchasedItems(List<CartItemDto> purchasedItems) {
+        public Builder withPurchasedItems(List<PurchasedItemDto> purchasedItems) {
             this.purchasedItems = purchasedItems;
             return this;
         }
 
-        public Builder withTotalAmount(double totalAmount) {
-            this.totalAmount = totalAmount;
+        public Builder withReceiptDiscount(ReceiptDiscountDto receiptDiscount) {
+            this.receiptDiscount = receiptDiscount;
             return this;
         }
 
@@ -75,18 +75,8 @@ public class ReceiptDto {
             receiptDto.setReceiptId(this.receiptId);
             receiptDto.setIssuedAt(this.issuedAt);
             receiptDto.setPurchasedItems(this.purchasedItems);
-            receiptDto.setTotalAmount(this.totalAmount);
+            receiptDto.setReceiptDiscount(this.receiptDiscount);
             return receiptDto;
         }
-    }
-
-    @Override
-    public String toString() {
-        return "ReceiptDto{" +
-                "receiptId=" + receiptId +
-                ", issuedAt=" + issuedAt +
-                ", purchasedItems=" + purchasedItems +
-                ", totalAmount=" + totalAmount +
-                '}';
     }
 }

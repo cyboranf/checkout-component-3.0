@@ -5,11 +5,14 @@ import com.component.checkout.infrastructure.repository.ItemRepository;
 import com.component.checkout.infrastructure.repository.ReceiptRepository;
 import com.component.checkout.model.*;
 import com.component.checkout.presentation.dto.cart.CartDto;
+import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 import com.component.checkout.presentation.mapper.CartMapper;
+import com.component.checkout.presentation.mapper.ReceiptMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,6 +50,42 @@ public class CartService {
         return CartMapper.toDto(cartRepository.save(cart));
     }
 
+    @Transactional
+    public ReceiptDto checkout(HttpServletRequest request) {
+        User user = securityService.getAuthenticatedUser(request);
+        Cart cart = user.getCart();
+
+        if (cart == null || cart.getCartItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty, cannot checkout");
+        }
+
+        Optional<CartItem> cartItems = cart.getCartItems().stream().findFirst();
+        if (cartItems.isPresent()) {
+            if (cartItems.get().getCart() == null) {
+                throw new IllegalStateException("Cart is empty, cannot checkout");
+            }
+        }
+
+        recalculateCart(cart);
+
+        Receipt receipt = new Receipt();
+        receipt.setIssuedAt(timeProvider.nowDate());
+        receipt.setPurchasedItems(new ArrayList<>(cart.getCartItems()));
+
+        receipt = receiptRepository.save(receipt);
+
+        ReceiptDto receiptDto = ReceiptMapper.toDto(
+                receipt,
+                cart.getTotalPriceWithoutDiscounts(),
+                cart.getSumOfDiscount(),
+                cart.getTotalPriceWithDiscounts()
+        );
+
+        clearCart(cart);
+
+        return receiptDto;
+    }
+
     private void addOrUpdateCartItem(Cart cart, Item item, int quantity) {
         Optional<CartItem> existingCartItem = cart.getCartItems().stream()
                 .filter(cartItem -> cartItem.getItem().getId().equals(item.getId()))
@@ -75,8 +114,6 @@ public class CartService {
 
         double totalPriceWithoutDiscounts = 0.0;
         double totalPriceWithDiscounts = 0.0;
-        int totalBundlePromoQuantity = 0;
-        double totalBundleDiscount = 0.0;
 
         for (CartItem cartItem : cart.getCartItems()) {
             Item item = cartItem.getItem();
@@ -105,10 +142,9 @@ public class CartService {
                 cartItem.setQuantitySpecialPrice(0);
                 cartItem.setQuantityNormalPrice(totalQuantity);
 
-                double singleFinalPrice = singleNormalPrice;
-                cartItem.setSingleSpecialPrice(singleFinalPrice);
+                cartItem.setSingleSpecialPrice(singleNormalPrice);
 
-                double totalFinalPrice = singleFinalPrice * totalQuantity;
+                double totalFinalPrice = singleNormalPrice * totalQuantity;
                 totalFinalPrice = applyBundleDiscounts(cart, cartItem, groupedQuantities, totalFinalPrice);
                 totalPriceWithDiscounts += totalFinalPrice;
             }
@@ -129,23 +165,37 @@ public class CartService {
         if (item.getBundleDiscounts() != null) {
             for (BundleDiscount bundleDiscount : item.getBundleDiscounts()) {
                 Item bundledItem = bundleDiscount.getBundledItem();
-
                 if (groupedQuantities.containsKey(bundledItem.getId())) {
                     int bundledQuantity = groupedQuantities.get(bundledItem.getId());
+
                     int applicableDiscounts = Math.min(cartItem.getQuantity(), bundledQuantity);
-
-                    itemPromoQuantity += applicableDiscounts;
-                    itemPromoDiscount += applicableDiscounts * bundleDiscount.getDiscount();
-
-                    totalFinalPrice -= applicableDiscounts * bundleDiscount.getDiscount();
+                    if (applicableDiscounts > 0) {
+                        itemPromoQuantity += applicableDiscounts;
+                        itemPromoDiscount += applicableDiscounts * bundleDiscount.getDiscount();
+                        totalFinalPrice -= applicableDiscounts * bundleDiscount.getDiscount();
+                    }
                 }
             }
         }
+
+        cartItem.setBundleDiscount(itemPromoDiscount);
+        cartItem.setBundleDiscountQuantity(itemPromoQuantity);
 
         cart.setTotalBundlePromoQuantity(cart.getTotalBundlePromoQuantity() + itemPromoQuantity);
         cart.setTotalBundleDiscount(cart.getTotalBundleDiscount() + itemPromoDiscount);
 
         return totalFinalPrice;
+    }
+
+    private void clearCart(Cart cart) {
+        cart.getCartItems().forEach(cartItem -> cartItem.setCart(null));
+        cart.setTotalPriceWithoutDiscounts(0.0);
+        cart.setTotalPriceWithDiscounts(0.0);
+        cart.setSumOfDiscount(0.0);
+        cart.setTotalBundleDiscount(0.0);
+        cart.setTotalBundlePromoQuantity(0);
+
+        cartRepository.save(cart);
     }
 
     private Item findItemById(Long itemId) {
