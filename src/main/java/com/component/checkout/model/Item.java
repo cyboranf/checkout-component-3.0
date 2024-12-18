@@ -2,6 +2,8 @@ package com.component.checkout.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 public class Item {
 
@@ -18,6 +20,9 @@ public class Item {
 
     @Column(columnDefinition = "DECIMAL(10, 2)")
     private double specialPrice;
+
+    @OneToMany(mappedBy = "primaryItem", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BundleDiscount> bundleDiscounts;
 
     public Item() {
     }
@@ -68,6 +73,14 @@ public class Item {
 
     public void setSpecialPrice(double specialPrice) {
         this.specialPrice = specialPrice;
+    }
+
+    public Set<BundleDiscount> getBundleDiscounts() {
+        return bundleDiscounts;
+    }
+
+    public void setBundleDiscounts(Set<BundleDiscount> bundleDiscounts) {
+        this.bundleDiscounts = bundleDiscounts;
     }
 
     public static class Builder {
