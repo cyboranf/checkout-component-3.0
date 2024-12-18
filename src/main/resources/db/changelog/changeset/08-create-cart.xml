@@ -10,7 +10,13 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="total_price" type="DECIMAL(10, 2)">
+            <column name="total_price_with_discounts" type="DECIMAL(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_price_without_discounts" type="DECIMAL(10, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sum_of_discount" type="DECIMAL(10, 2)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

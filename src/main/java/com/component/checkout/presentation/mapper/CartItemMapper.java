@@ -11,6 +11,10 @@ public class CartItemMapper {
                 .withItemId(cartItem.getItem().getId())
                 .withCartId(cartItem.getCart() != null ? cartItem.getCart().getId() : null)
                 .withQuantity(cartItem.getQuantity())
+                .withSingleNormalPrice(cartItem.getSingleNormalPrice())
+                .withSingleFinalPrice(cartItem.getSingleFinalPrice())
+                .withQuantityWithFinalPrice(cartItem.getQuantityWithFinalPrice())
+                .withQuantityWithNormalPrice(cartItem.getQuantityWithNormalPrice())
                 .build();
     }
 }

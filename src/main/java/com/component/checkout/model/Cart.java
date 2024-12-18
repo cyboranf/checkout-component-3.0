@@ -15,7 +15,13 @@ public class Cart {
     private List<CartItem> cartItems;
 
     @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
-    private double totalPrice;
+    private double totalPriceWithDiscounts = 0.0;
+
+    @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
+    private double totalPriceWithoutDiscounts = 0.0;
+
+    @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
+    private double sumOfDiscount = 0.0;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
@@ -27,7 +33,9 @@ public class Cart {
     private Cart(Builder builder) {
         this.id = builder.id;
         this.cartItems = builder.cartItems;
-        this.totalPrice = builder.totalPrice;
+        this.totalPriceWithDiscounts = builder.totalPriceWithDiscounts;
+        this.totalPriceWithoutDiscounts = builder.totalPriceWithoutDiscounts;
+        this.sumOfDiscount = builder.sumOfDiscount;
         this.user = builder.user;
     }
 
@@ -39,8 +47,8 @@ public class Cart {
         return cartItems;
     }
 
-    public double getTotalPrice() {
-        return totalPrice;
+    public double getTotalPriceWithDiscounts() {
+        return totalPriceWithDiscounts;
     }
 
     public User getUser() {
@@ -55,18 +63,36 @@ public class Cart {
         this.cartItems = cartItems;
     }
 
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
+    public void setTotalPriceWithDiscounts(double totalPriceWithDiscounts) {
+        this.totalPriceWithDiscounts = totalPriceWithDiscounts;
     }
 
     public void setUser(User user) {
         this.user = user;
     }
 
+    public double getTotalPriceWithoutDiscounts() {
+        return totalPriceWithoutDiscounts;
+    }
+
+    public void setTotalPriceWithoutDiscounts(double totalPriceWithoutDiscounts) {
+        this.totalPriceWithoutDiscounts = totalPriceWithoutDiscounts;
+    }
+
+    public double getSumOfDiscount() {
+        return sumOfDiscount;
+    }
+
+    public void setSumOfDiscount(double sumOfDiscount) {
+        this.sumOfDiscount = sumOfDiscount;
+    }
+
     public static class Builder {
         private Long id;
         private List<CartItem> cartItems;
-        private double totalPrice;
+        private double totalPriceWithDiscounts;
+        private double totalPriceWithoutDiscounts;
+        private double sumOfDiscount;
         private User user;
 
         public Builder withId(Long id) {
@@ -79,8 +105,18 @@ public class Cart {
             return this;
         }
 
-        public Builder withTotalPrice(double totalPrice) {
-            this.totalPrice = totalPrice;
+        public Builder withTotalPriceWithDiscounts(double totalPriceWithDiscounts) {
+            this.totalPriceWithDiscounts = totalPriceWithDiscounts;
+            return this;
+        }
+
+        public Builder withTotalPriceWithoutDiscounts(double totalPriceWithoutDiscounts) {
+            this.totalPriceWithoutDiscounts = totalPriceWithoutDiscounts;
+            return this;
+        }
+
+        public Builder withSumOfDiscount(double sumOfDiscount) {
+            this.sumOfDiscount = sumOfDiscount;
             return this;
         }
 

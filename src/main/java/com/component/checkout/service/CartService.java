@@ -5,14 +5,11 @@ import com.component.checkout.infrastructure.repository.ItemRepository;
 import com.component.checkout.infrastructure.repository.ReceiptRepository;
 import com.component.checkout.model.*;
 import com.component.checkout.presentation.dto.cart.CartDto;
-import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 import com.component.checkout.presentation.mapper.CartMapper;
-import com.component.checkout.presentation.mapper.ReceiptMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,145 +31,113 @@ public class CartService {
         this.receiptRepository = receiptRepository;
     }
 
-    /**
-     * Business Requirement:
-     * ● Checkout mechanism can scan items and return actual price (is stateful).
-     * ● Our goods are priced individually.
-     * ● Some items are multi-priced: buy N of them, and they’ll cost you Y cents.
-     *
-     * This method adds items to the cart, updates the cart's state, and recalculates the total price.
-     */
     @Transactional
     public CartDto addItemToCart(Long itemId, int quantity, HttpServletRequest request) {
+        if (itemId == null || quantity <= 0) {
+            throw new IllegalArgumentException("Invalid itemId or quantity.");
+        }
+
         User user = securityService.getAuthenticatedUser(request);
         Cart cart = user.getCart();
         Item item = findItemById(itemId);
 
+        addOrUpdateCartItem(cart, item, quantity);
+
+        recalculateCart(cart);
+
+        return CartMapper.toDto(cartRepository.save(cart));
+    }
+
+    private void addOrUpdateCartItem(Cart cart, Item item, int quantity) {
         Optional<CartItem> existingCartItem = cart.getCartItems().stream()
-                .filter(cartItem -> cartItem.getItem().getId().equals(itemId))
+                .filter(cartItem -> cartItem.getItem().getId().equals(item.getId()))
                 .findFirst();
 
         if (existingCartItem.isPresent()) {
             CartItem cartItem = existingCartItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
         } else {
-            CartItem cartItem = new CartItem.Builder()
+            CartItem newCartItem = new CartItem.Builder()
                     .withCart(cart)
                     .withItem(item)
                     .withQuantity(quantity)
+                    .withSingleNormalPrice(item.getNormalPrice())
                     .build();
-            cart.getCartItems().add(cartItem);
+            cart.getCartItems().add(newCartItem);
         }
-
-        cart.setTotalPrice(calculateCartTotal(cart));
-
-        Cart savedCart = cartRepository.save(cart);
-
-        return CartMapper.toDto(savedCart);
     }
 
-    /**
-     * Business Requirement:
-     * ● Client receives receipt containing list of all products with corresponding prices after payment.
-     *
-     * This method clears the cart after checkout and generates a receipt with purchased items and total amount.
-     */
-    @Transactional
-    public ReceiptDto checkoutCart(HttpServletRequest request) {
-        User user = securityService.getAuthenticatedUser(request);
-        Cart cart = user.getCart();
-
-        Receipt receipt = new Receipt.Builder()
-                .withIssuedAt(timeProvider.nowDate())
-                .withTotalAmount(cart.getTotalPrice())
-                .build();
-
-        List<CartItem> copiedItems = cart.getCartItems().stream()
-                .map(cartItem -> {
-                    CartItem copiedItem = new CartItem.Builder()
-                            .withItem(cartItem.getItem())
-                            .withQuantity(cartItem.getQuantity())
-                            .build();
-                    copiedItem.setCart(null);
-                    return copiedItem;
-                })
-                .toList();
-
-        receipt.setPurchasedItems(copiedItems);
-
-        cart.getCartItems().clear();
-        cart.setTotalPrice(0);
-        cartRepository.save(cart);
-
-        return ReceiptMapper.toDto(receiptRepository.save(receipt));
-    }
-
-    /**
-     * Business Requirement:
-     * ● Checkout mechanism can scan items and return actual price (is stateful).
-     *
-     * This method retrieves the current state of the cart for viewing.
-     */
-    public CartDto viewCart(HttpServletRequest request) {
-        User user = securityService.getAuthenticatedUser(request);
-        Cart cart = user.getCart();
-        return CartMapper.toDto(cart);
-    }
-
-    /**
-     * Business Requirement:
-     * ● Some items are multi-priced: buy N of them, and they’ll cost you Y cents.
-     * ● Some items are cheaper when bought together - buy item X with item Y and save Z cents.
-     *
-     * This method calculates the total price of all items in the cart, considering multi-priced and bundled discounts.
-     *
-     * How Bundled Discounts Work:
-     * - For every pair of items specified in the `bundle_discount` table, if both are present in the cart, the discount
-     *   is applied for the minimum quantity of the pair.
-     * - Example based on the given Liquibase change set:
-     *     1. If Item A (ID = 1) and Item B (ID = 2) are in the cart, a discount of 5 is applied for each pair.
-     *     2. If Item C (ID = 3) and Item D (ID = 4) are in the cart, a discount of 3 is applied for each pair.
-     */
-    private double calculateCartTotal(Cart cart) {
-        double total = 0.0;
-
-        Map<Long, Integer> itemQuantities = cart.getCartItems().stream()
-                .collect(Collectors.toMap(
+    private void recalculateCart(Cart cart) {
+        Map<Long, Integer> groupedQuantities = cart.getCartItems().stream()
+                .collect(Collectors.groupingBy(
                         cartItem -> cartItem.getItem().getId(),
-                        CartItem::getQuantity
+                        Collectors.summingInt(CartItem::getQuantity)
                 ));
+
+        double totalPriceWithoutDiscounts = 0.0;
+        double totalPriceWithDiscounts = 0.0;
 
         for (CartItem cartItem : cart.getCartItems()) {
             Item item = cartItem.getItem();
-            int quantity = cartItem.getQuantity();
-            int requiredForSpecial = item.getRequiredQuantityForSpecialPrice();
+            int totalQuantity = groupedQuantities.get(item.getId());
 
-            if (quantity >= requiredForSpecial) {
-                int specialBundles = quantity / requiredForSpecial;
-                int remainingItems = quantity % requiredForSpecial;
-                total += (specialBundles * item.getSpecialPrice()) + (remainingItems * item.getNormalPrice());
+            double singleNormalPrice = item.getNormalPrice();
+            cartItem.setSingleNormalPrice(singleNormalPrice);
+
+            int requiredForSpecial = item.getRequiredQuantityForSpecialPrice();
+            if (requiredForSpecial > 0) {
+                int specialBundles = totalQuantity / requiredForSpecial;
+                int remainingItems = totalQuantity % requiredForSpecial;
+
+                int quantityWithFinalPrice = specialBundles * requiredForSpecial;
+                int quantityWithNormalPrice = remainingItems;
+
+                cartItem.setQuantityWithFinalPrice(quantityWithFinalPrice);
+                cartItem.setQuantityWithNormalPrice(quantityWithNormalPrice);
+
+                double singleFinalPrice = item.getSpecialPrice();
+                cartItem.setSingleFinalPrice(singleFinalPrice);
+
+                double totalFinalPrice = (quantityWithFinalPrice * singleFinalPrice) +
+                        (quantityWithNormalPrice * singleNormalPrice);
+
+                totalFinalPrice = applyBundleDiscounts(cartItem, groupedQuantities, totalFinalPrice);
+
+                totalPriceWithDiscounts += totalFinalPrice;
             } else {
-                total += quantity * item.getNormalPrice();
+                cartItem.setQuantityWithFinalPrice(0);
+                cartItem.setQuantityWithNormalPrice(totalQuantity);
+
+                double singleFinalPrice = singleNormalPrice;
+                cartItem.setSingleFinalPrice(singleFinalPrice);
+
+                double totalFinalPrice = singleFinalPrice * totalQuantity;
+                totalFinalPrice = applyBundleDiscounts(cartItem, groupedQuantities, totalFinalPrice);
+
+                totalPriceWithDiscounts += totalFinalPrice;
             }
 
-            if (item.getBundleDiscounts() != null) {
-                for (BundleDiscount bundleDiscount : item.getBundleDiscounts()) {
-                    Item bundledItem = bundleDiscount.getBundledItem();
-                    if (itemQuantities.containsKey(bundledItem.getId())) {
-                        int bundledQuantity = itemQuantities.get(bundledItem.getId());
-                        int applicableDiscounts = Math.min(quantity, bundledQuantity);
-                        total -= applicableDiscounts * bundleDiscount.getDiscount();
-                    }
+            totalPriceWithoutDiscounts += singleNormalPrice * totalQuantity;
+        }
+
+        cart.setTotalPriceWithoutDiscounts(totalPriceWithoutDiscounts);
+        cart.setTotalPriceWithDiscounts(totalPriceWithDiscounts);
+        cart.setSumOfDiscount(totalPriceWithoutDiscounts - totalPriceWithDiscounts);
+    }
+
+    private double applyBundleDiscounts(CartItem cartItem, Map<Long, Integer> groupedQuantities, double totalFinalPrice) {
+        Item item = cartItem.getItem();
+        if (item.getBundleDiscounts() != null) {
+            for (BundleDiscount bundleDiscount : item.getBundleDiscounts()) {
+                Item bundledItem = bundleDiscount.getBundledItem();
+                if (groupedQuantities.containsKey(bundledItem.getId())) {
+                    int bundledQuantity = groupedQuantities.get(bundledItem.getId());
+                    int applicableDiscounts = Math.min(cartItem.getQuantity(), bundledQuantity);
+                    totalFinalPrice -= applicableDiscounts * bundleDiscount.getDiscount();
                 }
             }
         }
-
-        return total;
-    }
-
-    private Cart findCartById(Long cartId) {
-        return cartRepository.findById(cartId)
-                .orElseThrow(() -> new IllegalArgumentException("Cart with id = " + cartId + " not found"));
+        return totalFinalPrice;
     }
 
     private Item findItemById(Long itemId) {

@@ -6,6 +6,10 @@ public class CartItemDto {
     private Long itemId;
     private Long cartId;
     private int quantity;
+    private double singleNormalPrice;
+    private double singleFinalPrice;
+    private int quantityWithNormalPrice;
+    private int quantityWithFinalPrice;
 
     public Long getCartItemId() {
         return cartItemId;
@@ -39,11 +43,67 @@ public class CartItemDto {
         this.quantity = quantity;
     }
 
+    public double getSingleNormalPrice() {
+        return singleNormalPrice;
+    }
+
+    public void setSingleNormalPrice(double singleNormalPrice) {
+        this.singleNormalPrice = singleNormalPrice;
+    }
+
+    public double getSingleFinalPrice() {
+        return singleFinalPrice;
+    }
+
+    public void setSingleFinalPrice(double singleFinalPrice) {
+        this.singleFinalPrice = singleFinalPrice;
+    }
+
+    public int getQuantityWithNormalPrice() {
+        return quantityWithNormalPrice;
+    }
+
+    public void setQuantityWithNormalPrice(int quantityWithNormalPrice) {
+        this.quantityWithNormalPrice = quantityWithNormalPrice;
+    }
+
+    public int getQuantityWithFinalPrice() {
+        return quantityWithFinalPrice;
+    }
+
+    public void setQuantityWithFinalPrice(int quantityWithFinalPrice) {
+        this.quantityWithFinalPrice = quantityWithFinalPrice;
+    }
+
     public static class Builder {
         private Long cartItemId;
         private Long itemId;
         private Long cartId;
         private int quantity;
+        private double singleNormalPrice;
+        private double singleFinalPrice;
+        private int quantityWithNormalPrice;
+        private int quantityWithFinalPrice;
+
+        public Builder withQuantityWithNormalPrice(int quantityWithNormalPrice) {
+            this.quantityWithNormalPrice = quantityWithNormalPrice;
+            return this;
+        }
+
+        public Builder withQuantityWithFinalPrice(int quantityWithFinalPrice) {
+            this.quantityWithFinalPrice = quantityWithFinalPrice;
+            return this;
+        }
+
+        public Builder withSingleNormalPrice(double singleNormalPrice) {
+            this.singleNormalPrice = singleNormalPrice;
+            return this;
+        }
+
+        public Builder withSingleFinalPrice(double singleFinalPrice) {
+            this.singleFinalPrice = singleFinalPrice;
+            return this;
+        }
 
         public Builder withCartItemId(Long cartItemId) {
             this.cartItemId = cartItemId;
@@ -71,6 +131,10 @@ public class CartItemDto {
             cartItemDto.setItemId(this.itemId);
             cartItemDto.setCartId(this.cartId);
             cartItemDto.setQuantity(this.quantity);
+            cartItemDto.setSingleNormalPrice(this.singleNormalPrice);
+            cartItemDto.setSingleFinalPrice(this.singleFinalPrice);
+            cartItemDto.setQuantityWithNormalPrice(this.quantityWithNormalPrice);
+            cartItemDto.setQuantityWithFinalPrice(this.quantityWithFinalPrice);
             return cartItemDto;
         }
     }

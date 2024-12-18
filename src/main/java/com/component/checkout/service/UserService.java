@@ -84,7 +84,7 @@ public class UserService {
             Cart cart = new Cart.Builder()
                     .withUser(user)
                     .withCartItems(Collections.emptyList())
-                    .withTotalPrice(0.0)
+                    .withTotalPriceWithDiscounts(0.0)
                     .build();
             cartRepository.save(cart);
         }

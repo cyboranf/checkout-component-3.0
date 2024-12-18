@@ -1,7 +1,7 @@
 ● Design and implement a market checkout component with a readable API that
-calculates the total price of a number of items. - imo done
+calculates the total singleNormalPrice of a number of items. - imo done
 
-● Checkout mechanism can scan items and return actual price (is stateful) - done
+● Checkout mechanism can scan items and return actual singleNormalPrice (is stateful) - done
 
 ● Our goods are priced individually. - done
 
