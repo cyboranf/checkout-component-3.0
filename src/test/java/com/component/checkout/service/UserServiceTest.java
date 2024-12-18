@@ -30,7 +30,7 @@ class UserServiceTest {
         userRepository = mock(UserRepository.class);
         roleRepository = mock(RoleRepository.class);
         passwordEncoder = mock(PasswordEncoder.class);
-        userService = new UserService(userRepository, roleRepository, passwordEncoder);
+//        userService = new UserService(userRepository, roleRepository, passwordEncoder);
     }
 
     @Test

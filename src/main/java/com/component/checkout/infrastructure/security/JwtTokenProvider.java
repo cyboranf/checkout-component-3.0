@@ -1,5 +1,6 @@
 package com.component.checkout.infrastructure.security;
 
+import com.component.checkout.service.TimeProvider;
 import io.jsonwebtoken.*;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
@@ -31,12 +32,15 @@ public class JwtTokenProvider {
 
     private SecretKey jwtSecret;
 
+    private final TimeProvider timeProvider;
     private final UserDetailsServiceImpl userDetailsService;
 
     @Autowired
-    public JwtTokenProvider(@Lazy UserDetailsServiceImpl userDetailsService) {
+    public JwtTokenProvider(TimeProvider timeProvider, @Lazy UserDetailsServiceImpl userDetailsService) {
+        this.timeProvider = timeProvider;
         this.userDetailsService = userDetailsService;
     }
+
     @PostConstruct
     private void init() {
         jwtSecret = generateSecretKey(secret);
@@ -44,7 +48,7 @@ public class JwtTokenProvider {
 
     public String generateToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
-        Date now = new Date();
+        Date now = timeProvider.nowDate();
         Date expiryDate = new Date(now.getTime() + expiration);
 
         return Jwts.builder()

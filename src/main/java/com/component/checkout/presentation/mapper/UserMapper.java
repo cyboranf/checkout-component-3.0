@@ -5,6 +5,15 @@ import com.component.checkout.presentation.dto.auth.AuthResponse;
 
 public class UserMapper {
 
+    public static AuthResponse toAuthResponse(User user, String token) {
+        return new AuthResponse.Builder()
+                .withUserLogin(user.getLogin())
+                .withToken(token)
+                .withSuccess(true)
+                .withMessage("Operation successful.")
+                .build();
+    }
+
     public static AuthResponse toAuthResponse(User user) {
         return new AuthResponse.Builder()
                 .withUserLogin(user.getLogin())

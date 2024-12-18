@@ -30,6 +30,7 @@ public class ResponseUtil {
     public static ResponseEntity<AuthResponse> buildSuccessResponseAuth(AuthResponse authResponse, String message) {
         AuthResponse response = new AuthResponse.Builder()
                 .withUserLogin(authResponse.getUser())
+                .withToken(authResponse.getToken())
                 .withSuccess(true)
                 .withMessage(message)
                 .build();

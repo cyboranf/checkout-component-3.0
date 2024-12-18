@@ -20,11 +20,13 @@ import java.util.Optional;
 @Service
 public class CartService {
 
+    private final TimeProvider timeProvider;
     private final CartRepository cartRepository;
     private final ItemRepository itemRepository;
     private final ReceiptRepository receiptRepository;
 
-    public CartService(CartRepository cartRepository, ItemRepository itemRepository, ReceiptRepository receiptRepository) {
+    public CartService(TimeProvider timeProvider, CartRepository cartRepository, ItemRepository itemRepository, ReceiptRepository receiptRepository) {
+        this.timeProvider = timeProvider;
         this.cartRepository = cartRepository;
         this.itemRepository = itemRepository;
         this.receiptRepository = receiptRepository;
@@ -63,7 +65,7 @@ public class CartService {
         Cart cart = findCartById(cartId);
 
         Receipt receipt = new Receipt.Builder()
-                .withIssuedAt(new Date())
+                .withIssuedAt(timeProvider.nowDate())
                 .withPurchasedItems(cart.getCartItems())
                 .withTotalAmount(cart.getTotalPrice())
                 .build();
