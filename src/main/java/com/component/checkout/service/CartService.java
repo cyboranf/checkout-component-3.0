@@ -5,7 +5,9 @@ import com.component.checkout.infrastructure.repository.ItemRepository;
 import com.component.checkout.infrastructure.repository.ReceiptRepository;
 import com.component.checkout.model.*;
 import com.component.checkout.presentation.dto.cart.CartDto;
+import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 import com.component.checkout.presentation.mapper.CartMapper;
+import com.component.checkout.presentation.mapper.ReceiptMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -45,6 +47,11 @@ public class CartService {
         recalculateCart(cart);
 
         return CartMapper.toDto(cartRepository.save(cart));
+    }
+
+    @Transactional
+    public ReceiptDto checkout(HttpServletRequest request) {
+        return null;
     }
 
     private void addOrUpdateCartItem(Cart cart, Item item, int quantity) {

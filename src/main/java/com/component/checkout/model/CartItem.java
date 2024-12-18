@@ -34,6 +34,12 @@ public class CartItem {
     @Column(nullable = false)
     private int quantitySpecialPrice;
 
+    @Transient
+    private double bundleDiscount;
+
+    @Transient
+    private int bundleDiscountQuantity;
+
     public CartItem() {}
 
     private CartItem(Builder builder) {
@@ -44,34 +50,36 @@ public class CartItem {
         this.quantityNormalPrice = builder.quantityWithNormalPrice;
         this.singleSpecialPrice = builder.singleSpecialPrice;
         this.quantitySpecialPrice = builder.quantityWithFinalPrice;
+        this.bundleDiscount = builder.bundleDiscount;
+        this.bundleDiscountQuantity = builder.bundleDiscountQuantity;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public Cart getCart() {
-        return cart;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Item getItem() {
+        return item;
     }
 
     public void setItem(Item item) {
         this.item = item;
     }
 
+    public Cart getCart() {
+        return cart;
+    }
+
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public void setQuantity(int quantity) {
@@ -86,20 +94,20 @@ public class CartItem {
         this.singleNormalPrice = singleNormalPrice;
     }
 
-    public double getSingleSpecialPrice() {
-        return singleSpecialPrice;
-    }
-
-    public void setSingleSpecialPrice(double singleSpecialPrice) {
-        this.singleSpecialPrice = singleSpecialPrice;
-    }
-
     public int getQuantityNormalPrice() {
         return quantityNormalPrice;
     }
 
     public void setQuantityNormalPrice(int quantityNormalPrice) {
         this.quantityNormalPrice = quantityNormalPrice;
+    }
+
+    public double getSingleSpecialPrice() {
+        return singleSpecialPrice;
+    }
+
+    public void setSingleSpecialPrice(double singleSpecialPrice) {
+        this.singleSpecialPrice = singleSpecialPrice;
     }
 
     public int getQuantitySpecialPrice() {
@@ -110,6 +118,22 @@ public class CartItem {
         this.quantitySpecialPrice = quantitySpecialPrice;
     }
 
+    public double getBundleDiscount() {
+        return bundleDiscount;
+    }
+
+    public void setBundleDiscount(double bundleDiscount) {
+        this.bundleDiscount = bundleDiscount;
+    }
+
+    public int getBundleDiscountQuantity() {
+        return bundleDiscountQuantity;
+    }
+
+    public void setBundleDiscountQuantity(int bundleDiscountQuantity) {
+        this.bundleDiscountQuantity = bundleDiscountQuantity;
+    }
+
     public static class Builder {
         private Item item;
         private Cart cart;
@@ -118,6 +142,8 @@ public class CartItem {
         private double singleSpecialPrice;
         private int quantityWithNormalPrice;
         private int quantityWithFinalPrice;
+        private double bundleDiscount;
+        private int bundleDiscountQuantity;
 
         public Builder withItem(Item item) {
             this.item = item;
@@ -151,6 +177,16 @@ public class CartItem {
 
         public Builder withQuantityWithFinalPrice(int quantityWithFinalPrice) {
             this.quantityWithFinalPrice = quantityWithFinalPrice;
+            return this;
+        }
+
+        public Builder withBundleDiscount(double bundleDiscount) {
+            this.bundleDiscount = bundleDiscount;
+            return this;
+        }
+
+        public Builder withBundleDiscountQuantity(int bundleDiscountQuantity) {
+            this.bundleDiscountQuantity = bundleDiscountQuantity;
             return this;
         }
 
