@@ -1,5 +1,6 @@
 package com.component.checkout.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -11,6 +12,7 @@ public class BundleDiscount {
 
     @ManyToOne
     @JoinColumn(name = "primary_item_id", nullable = false)
+    @JsonBackReference
     private Item primaryItem;
 
     @ManyToOne

@@ -1,26 +1,26 @@
 package com.component.checkout.presentation.dto.cart;
 
-import com.component.checkout.model.CartItem;
+import com.component.checkout.presentation.dto.cartItem.CartItemDto;
 
 import java.util.List;
 
 public class CartDto {
 
     private final Long cartId;
-    private final List<CartItem> cartItems;
+    private final List<CartItemDto> cartItems;
     private final double totalPrice;
 
     private CartDto(Builder builder) {
         this.cartId = builder.cartId;
-        this.cartItems = builder.cartItems;
         this.totalPrice = builder.totalPrice;
+        this.cartItems = builder.cartItems;
     }
 
     public Long getCartId() {
         return cartId;
     }
 
-    public List<CartItem> getCartItems() {
+    public List<CartItemDto> getCartItems() {
         return cartItems;
     }
 
@@ -30,7 +30,7 @@ public class CartDto {
 
     public static class Builder {
         private Long cartId;
-        private List<CartItem> cartItems;
+        private List<CartItemDto> cartItems;
         private double totalPrice;
 
         public Builder withCartId(Long cartId) {
@@ -38,7 +38,7 @@ public class CartDto {
             return this;
         }
 
-        public Builder withCartItems(List<CartItem> cartItems) {
+        public Builder withCartItems(List<CartItemDto> cartItems) {
             this.cartItems = cartItems;
             return this;
         }
