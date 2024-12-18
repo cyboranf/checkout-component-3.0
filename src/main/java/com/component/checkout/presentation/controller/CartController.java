@@ -41,16 +41,4 @@ public class CartController {
         CartDto cartDto = cartService.addItemToCart(itemId, quantity, request);
         return ResponseUtil.buildSuccessResponse(cartDto, "Item added successfully to the cart.");
     }
-
-//    @PostMapping("/checkout")
-//    public ResponseEntity<ReceiptResponse> checkoutCart(HttpServletRequest request) {
-//        ReceiptDto receiptDto = cartService.checkoutCart(request);
-//        return ResponseUtil.buildSuccessResponse(receiptDto, "Cart checked out successfully. Receipt generated.");
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity<CartResponse> viewCart(HttpServletRequest request) {
-//        CartDto cartDto = cartService.viewCart(request);
-//        return ResponseUtil.buildSuccessResponse(cartDto, "Cart retrieved successfully.");
-//    }
 }
