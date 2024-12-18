@@ -1,78 +1,53 @@
 package com.component.checkout.presentation.dto.cartItem;
 
+import com.component.checkout.presentation.dto.promotion.MultiPricedPromoDetailsDto;
+
 public class CartItemDto {
 
     private Long cartItemId;
     private Long itemId;
     private Long cartId;
     private int quantity;
-    private double singleNormalPrice;
-    private double singleFinalPrice;
-    private int quantityWithNormalPrice;
-    private int quantityWithFinalPrice;
+    private MultiPricedPromoDetailsDto multiPricedPromoDetails;
 
     public Long getCartItemId() {
         return cartItemId;
-    }
-
-    public Long getItemId() {
-        return itemId;
-    }
-
-    public Long getCartId() {
-        return cartId;
-    }
-
-    public int getQuantity() {
-        return quantity;
     }
 
     public void setCartItemId(Long cartItemId) {
         this.cartItemId = cartItemId;
     }
 
+    public Long getItemId() {
+        return itemId;
+    }
+
     public void setItemId(Long itemId) {
         this.itemId = itemId;
+    }
+
+    public Long getCartId() {
+        return cartId;
     }
 
     public void setCartId(Long cartId) {
         this.cartId = cartId;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public double getSingleNormalPrice() {
-        return singleNormalPrice;
+    public MultiPricedPromoDetailsDto getMultiPricedPromoDetails() {
+        return multiPricedPromoDetails;
     }
 
-    public void setSingleNormalPrice(double singleNormalPrice) {
-        this.singleNormalPrice = singleNormalPrice;
-    }
-
-    public double getSingleFinalPrice() {
-        return singleFinalPrice;
-    }
-
-    public void setSingleFinalPrice(double singleFinalPrice) {
-        this.singleFinalPrice = singleFinalPrice;
-    }
-
-    public int getQuantityWithNormalPrice() {
-        return quantityWithNormalPrice;
-    }
-
-    public void setQuantityWithNormalPrice(int quantityWithNormalPrice) {
-        this.quantityWithNormalPrice = quantityWithNormalPrice;
-    }
-
-    public int getQuantityWithFinalPrice() {
-        return quantityWithFinalPrice;
-    }
-
-    public void setQuantityWithFinalPrice(int quantityWithFinalPrice) {
-        this.quantityWithFinalPrice = quantityWithFinalPrice;
+    public void setMultiPricedPromoDetails(MultiPricedPromoDetailsDto multiPricedPromoDetails) {
+        this.multiPricedPromoDetails = multiPricedPromoDetails;
     }
 
     public static class Builder {
@@ -80,30 +55,7 @@ public class CartItemDto {
         private Long itemId;
         private Long cartId;
         private int quantity;
-        private double singleNormalPrice;
-        private double singleFinalPrice;
-        private int quantityWithNormalPrice;
-        private int quantityWithFinalPrice;
-
-        public Builder withQuantityWithNormalPrice(int quantityWithNormalPrice) {
-            this.quantityWithNormalPrice = quantityWithNormalPrice;
-            return this;
-        }
-
-        public Builder withQuantityWithFinalPrice(int quantityWithFinalPrice) {
-            this.quantityWithFinalPrice = quantityWithFinalPrice;
-            return this;
-        }
-
-        public Builder withSingleNormalPrice(double singleNormalPrice) {
-            this.singleNormalPrice = singleNormalPrice;
-            return this;
-        }
-
-        public Builder withSingleFinalPrice(double singleFinalPrice) {
-            this.singleFinalPrice = singleFinalPrice;
-            return this;
-        }
+        private MultiPricedPromoDetailsDto multiPricedPromoDetails;
 
         public Builder withCartItemId(Long cartItemId) {
             this.cartItemId = cartItemId;
@@ -125,16 +77,18 @@ public class CartItemDto {
             return this;
         }
 
+        public Builder withMultiPricedPromoDetails(MultiPricedPromoDetailsDto multiPricedPromoDetails) {
+            this.multiPricedPromoDetails = multiPricedPromoDetails;
+            return this;
+        }
+
         public CartItemDto build() {
             CartItemDto cartItemDto = new CartItemDto();
             cartItemDto.setCartItemId(this.cartItemId);
             cartItemDto.setItemId(this.itemId);
             cartItemDto.setCartId(this.cartId);
             cartItemDto.setQuantity(this.quantity);
-            cartItemDto.setSingleNormalPrice(this.singleNormalPrice);
-            cartItemDto.setSingleFinalPrice(this.singleFinalPrice);
-            cartItemDto.setQuantityWithNormalPrice(this.quantityWithNormalPrice);
-            cartItemDto.setQuantityWithFinalPrice(this.quantityWithFinalPrice);
+            cartItemDto.setMultiPricedPromoDetails(this.multiPricedPromoDetails);
             return cartItemDto;
         }
     }
@@ -146,6 +100,7 @@ public class CartItemDto {
                 ", itemId=" + itemId +
                 ", cartId=" + cartId +
                 ", quantity=" + quantity +
+                ", multiPricedPromoDetails=" + multiPricedPromoDetails +
                 '}';
     }
 }

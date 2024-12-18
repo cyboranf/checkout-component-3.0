@@ -19,6 +19,8 @@
             <column name="sum_of_discount" type="DECIMAL(10, 2)">
                 <constraints nullable="false"/>
             </column>
+            <column name="total_bundle_promo_quantity" type="INT" defaultValue="0"/>
+            <column name="total_bundle_discount" type="decimal(10,2)" defaultValue="0.00"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

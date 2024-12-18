@@ -42,7 +42,6 @@ public class CartService {
         Item item = findItemById(itemId);
 
         addOrUpdateCartItem(cart, item, quantity);
-
         recalculateCart(cart);
 
         return CartMapper.toDto(cartRepository.save(cart));
@@ -76,6 +75,8 @@ public class CartService {
 
         double totalPriceWithoutDiscounts = 0.0;
         double totalPriceWithDiscounts = 0.0;
+        int totalBundlePromoQuantity = 0;
+        double totalBundleDiscount = 0.0;
 
         for (CartItem cartItem : cart.getCartItems()) {
             Item item = cartItem.getItem();
@@ -89,31 +90,26 @@ public class CartService {
                 int specialBundles = totalQuantity / requiredForSpecial;
                 int remainingItems = totalQuantity % requiredForSpecial;
 
-                int quantityWithFinalPrice = specialBundles * requiredForSpecial;
-                int quantityWithNormalPrice = remainingItems;
-
-                cartItem.setQuantityWithFinalPrice(quantityWithFinalPrice);
-                cartItem.setQuantityWithNormalPrice(quantityWithNormalPrice);
+                cartItem.setQuantitySpecialPrice(specialBundles * requiredForSpecial);
+                cartItem.setQuantityNormalPrice(remainingItems);
 
                 double singleFinalPrice = item.getSpecialPrice();
-                cartItem.setSingleFinalPrice(singleFinalPrice);
+                cartItem.setSingleSpecialPrice(singleFinalPrice);
 
-                double totalFinalPrice = (quantityWithFinalPrice * singleFinalPrice) +
-                        (quantityWithNormalPrice * singleNormalPrice);
+                double totalFinalPrice = (specialBundles * requiredForSpecial * singleFinalPrice) +
+                        (remainingItems * singleNormalPrice);
 
-                totalFinalPrice = applyBundleDiscounts(cartItem, groupedQuantities, totalFinalPrice);
-
+                totalFinalPrice = applyBundleDiscounts(cart, cartItem, groupedQuantities, totalFinalPrice);
                 totalPriceWithDiscounts += totalFinalPrice;
             } else {
-                cartItem.setQuantityWithFinalPrice(0);
-                cartItem.setQuantityWithNormalPrice(totalQuantity);
+                cartItem.setQuantitySpecialPrice(0);
+                cartItem.setQuantityNormalPrice(totalQuantity);
 
                 double singleFinalPrice = singleNormalPrice;
-                cartItem.setSingleFinalPrice(singleFinalPrice);
+                cartItem.setSingleSpecialPrice(singleFinalPrice);
 
                 double totalFinalPrice = singleFinalPrice * totalQuantity;
-                totalFinalPrice = applyBundleDiscounts(cartItem, groupedQuantities, totalFinalPrice);
-
+                totalFinalPrice = applyBundleDiscounts(cart, cartItem, groupedQuantities, totalFinalPrice);
                 totalPriceWithDiscounts += totalFinalPrice;
             }
 
@@ -125,18 +121,30 @@ public class CartService {
         cart.setSumOfDiscount(totalPriceWithoutDiscounts - totalPriceWithDiscounts);
     }
 
-    private double applyBundleDiscounts(CartItem cartItem, Map<Long, Integer> groupedQuantities, double totalFinalPrice) {
+    private double applyBundleDiscounts(Cart cart, CartItem cartItem, Map<Long, Integer> groupedQuantities, double totalFinalPrice) {
         Item item = cartItem.getItem();
+        int itemPromoQuantity = 0;
+        double itemPromoDiscount = 0.0;
+
         if (item.getBundleDiscounts() != null) {
             for (BundleDiscount bundleDiscount : item.getBundleDiscounts()) {
                 Item bundledItem = bundleDiscount.getBundledItem();
+
                 if (groupedQuantities.containsKey(bundledItem.getId())) {
                     int bundledQuantity = groupedQuantities.get(bundledItem.getId());
                     int applicableDiscounts = Math.min(cartItem.getQuantity(), bundledQuantity);
+
+                    itemPromoQuantity += applicableDiscounts;
+                    itemPromoDiscount += applicableDiscounts * bundleDiscount.getDiscount();
+
                     totalFinalPrice -= applicableDiscounts * bundleDiscount.getDiscount();
                 }
             }
         }
+
+        cart.setTotalBundlePromoQuantity(cart.getTotalBundlePromoQuantity() + itemPromoQuantity);
+        cart.setTotalBundleDiscount(cart.getTotalBundleDiscount() + itemPromoDiscount);
+
         return totalFinalPrice;
     }
 

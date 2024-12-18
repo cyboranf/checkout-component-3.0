@@ -24,19 +24,26 @@ public class CartItem {
 
     @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
     private double singleNormalPrice;
-    private int quantityWithNormalPrice;
+
+    @Column(nullable = false)
+    private int quantityNormalPrice;
 
     @Column(columnDefinition = "DECIMAL(10, 2)", nullable = false)
-    private double singleFinalPrice;
-    private int quantityWithFinalPrice;
+    private double singleSpecialPrice;
 
-    public CartItem() {
-    }
+    @Column(nullable = false)
+    private int quantitySpecialPrice;
+
+    public CartItem() {}
 
     private CartItem(Builder builder) {
         this.item = builder.item;
         this.cart = builder.cart;
         this.quantity = builder.quantity;
+        this.singleNormalPrice = builder.singleNormalPrice;
+        this.quantityNormalPrice = builder.quantityWithNormalPrice;
+        this.singleSpecialPrice = builder.singleSpecialPrice;
+        this.quantitySpecialPrice = builder.quantityWithFinalPrice;
     }
 
     public Long getId() {
@@ -79,28 +86,28 @@ public class CartItem {
         this.singleNormalPrice = singleNormalPrice;
     }
 
-    public double getSingleFinalPrice() {
-        return singleFinalPrice;
+    public double getSingleSpecialPrice() {
+        return singleSpecialPrice;
     }
 
-    public void setSingleFinalPrice(double singleFinalPrice) {
-        this.singleFinalPrice = singleFinalPrice;
+    public void setSingleSpecialPrice(double singleSpecialPrice) {
+        this.singleSpecialPrice = singleSpecialPrice;
     }
 
-    public int getQuantityWithNormalPrice() {
-        return quantityWithNormalPrice;
+    public int getQuantityNormalPrice() {
+        return quantityNormalPrice;
     }
 
-    public void setQuantityWithNormalPrice(int quantityWithNormalPrice) {
-        this.quantityWithNormalPrice = quantityWithNormalPrice;
+    public void setQuantityNormalPrice(int quantityNormalPrice) {
+        this.quantityNormalPrice = quantityNormalPrice;
     }
 
-    public int getQuantityWithFinalPrice() {
-        return quantityWithFinalPrice;
+    public int getQuantitySpecialPrice() {
+        return quantitySpecialPrice;
     }
 
-    public void setQuantityWithFinalPrice(int quantityWithFinalPrice) {
-        this.quantityWithFinalPrice = quantityWithFinalPrice;
+    public void setQuantitySpecialPrice(int quantitySpecialPrice) {
+        this.quantitySpecialPrice = quantitySpecialPrice;
     }
 
     public static class Builder {
@@ -108,19 +115,9 @@ public class CartItem {
         private Cart cart;
         private int quantity;
         private double singleNormalPrice;
-        private double singleFinalPrice;
+        private double singleSpecialPrice;
         private int quantityWithNormalPrice;
         private int quantityWithFinalPrice;
-
-        public Builder withQuantityWithNormalPrice(int quantityWithNormalPrice) {
-            this.quantityWithNormalPrice = quantityWithNormalPrice;
-            return this;
-        }
-
-        public Builder withQuantityWithFinalPrice(int quantityWithFinalPrice) {
-            this.quantityWithFinalPrice = quantityWithFinalPrice;
-            return this;
-        }
 
         public Builder withItem(Item item) {
             this.item = item;
@@ -139,6 +136,21 @@ public class CartItem {
 
         public Builder withSingleNormalPrice(double singleNormalPrice) {
             this.singleNormalPrice = singleNormalPrice;
+            return this;
+        }
+
+        public Builder withSingleSpecialPrice(double singleSpecialPrice) {
+            this.singleSpecialPrice = singleSpecialPrice;
+            return this;
+        }
+
+        public Builder withQuantityWithNormalPrice(int quantityWithNormalPrice) {
+            this.quantityWithNormalPrice = quantityWithNormalPrice;
+            return this;
+        }
+
+        public Builder withQuantityWithFinalPrice(int quantityWithFinalPrice) {
+            this.quantityWithFinalPrice = quantityWithFinalPrice;
             return this;
         }
 

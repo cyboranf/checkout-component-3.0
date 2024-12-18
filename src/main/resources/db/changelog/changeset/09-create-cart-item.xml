@@ -20,9 +20,9 @@
                 <constraints nullable="false"/>
             </column>
             <column name="single_normal_price" type="decimal(10,2)" defaultValue="0.00"/>
-            <column name="quantity_with_normal_price" type="INT"/>
-            <column name="single_final_price" type="decimal(10,2)" defaultValue="0.00"/>
-            <column name="quantity_with_final_price" type="INT"/>
+            <column name="quantity_normal_price" type="INT" defaultValue="0"/>
+            <column name="single_special_price" type="decimal(10,2)" defaultValue="0.00"/>
+            <column name="quantity_special_price" type="INT" defaultValue="0"/>
         </createTable>
 
         <addForeignKeyConstraint
