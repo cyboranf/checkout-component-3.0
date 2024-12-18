@@ -23,7 +23,8 @@ class UserRepositoryTest {
 
         userRepository.save(user);
 
-        User foundUser = userRepository.findUserByLogin("testuser");
+        User foundUser = userRepository.findByLogin("testuser")
+                .orElseThrow(() -> new IllegalArgumentException("User not found with login: testuser"));
 
         assertThat(foundUser).isNotNull();
         assertThat(foundUser.getLogin()).isEqualTo("testuser");

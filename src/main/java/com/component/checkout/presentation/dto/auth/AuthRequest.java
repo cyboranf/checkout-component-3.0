@@ -1,4 +1,4 @@
-package com.component.checkout.presentation.dto;
+package com.component.checkout.presentation.dto.auth;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

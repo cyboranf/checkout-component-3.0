@@ -2,9 +2,8 @@ package com.component.checkout;
 
 import com.component.checkout.infrastructure.repository.RoleRepository;
 import com.component.checkout.model.Role;
-import com.component.checkout.presentation.dto.AuthRequest;
-import com.component.checkout.presentation.dto.AuthResponse;
-import jakarta.transaction.Transactional;
+import com.component.checkout.presentation.dto.auth.AuthRequest;
+import com.component.checkout.presentation.dto.auth.AuthResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

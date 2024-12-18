@@ -8,7 +8,10 @@ import com.component.checkout.model.CartItem;
 import com.component.checkout.model.Item;
 import com.component.checkout.model.Receipt;
 import com.component.checkout.presentation.dto.cart.CartDto;
+import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 import com.component.checkout.presentation.mapper.CartMapper;
+import com.component.checkout.presentation.mapper.ReceiptMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -27,6 +30,7 @@ public class CartService {
         this.receiptRepository = receiptRepository;
     }
 
+    @Transactional
     public CartDto addItemToCart(Long cartId, Long itemId, int quantity) {
         Cart cart = findCartById(cartId);
         Item item = findItemById(itemId);
@@ -39,10 +43,11 @@ public class CartService {
             CartItem cartItem = existingCartItem.get();
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
         } else {
-            CartItem cartItem = new CartItem();
-            cartItem.setCart(cart);
-            cartItem.setItem(item);
-            cartItem.setQuantity(quantity);
+            CartItem cartItem = new CartItem.Builder()
+                    .withCart(cart)
+                    .withItem(item)
+                    .withQuantity(quantity)
+                    .build();
             cart.getCartItems().add(cartItem);
         }
 
@@ -53,54 +58,52 @@ public class CartService {
         return CartMapper.toDto(savedCart);
     }
 
-    private double calculateCartTotal(Cart cart) {
-        double total = 0;
+    @Transactional
+    public ReceiptDto checkoutCart(Long cartId) {
+        Cart cart = findCartById(cartId);
 
-        for (CartItem cartItem : cart.getCartItems()) {
-            Item item = cartItem.getItem();
-            int quantity = cartItem.getQuantity();
-
-            if (quantity >= item.getRequiredQuantityForSpecialPrice()) {
-                int specialBundles = quantity / item.getRequiredQuantityForSpecialPrice();
-                int remainingItems = quantity % item.getRequiredQuantityForSpecialPrice();
-                total += specialBundles * item.getSpecialPrice();
-                total += remainingItems * item.getNormalPrice();
-            } else {
-                total += quantity * item.getNormalPrice();
-            }
-        }
-
-        return total;
-    }
-
-    public Receipt checkoutCart(Long cartId) {
-        Cart cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new IllegalArgumentException("Cart not found"));
-
-        Receipt receipt = new Receipt();
-        receipt.setIssuedAt(new Date());
-        receipt.setPurchasedItems(cart.getCartItems());
-        receipt.setTotalAmount(cart.getTotalPrice());
+        Receipt receipt = new Receipt.Builder()
+                .withIssuedAt(new Date())
+                .withPurchasedItems(cart.getCartItems())
+                .withTotalAmount(cart.getTotalPrice())
+                .build();
 
         cart.getCartItems().clear();
         cart.setTotalPrice(0);
         cartRepository.save(cart);
 
-        return receiptRepository.save(receipt);
+        return ReceiptMapper.toDto(receiptRepository.save(receipt));
     }
 
-    public Cart viewCart(Long cartId) {
-        return cartRepository.findById(cartId)
-                .orElseThrow(() -> new IllegalArgumentException("Cart not found")); // todo: it is for an endpoint it will return dto!
+    public CartDto viewCart(Long cartId) {
+        return CartMapper.toDto(findCartById(cartId));
+    }
+
+    private double calculateCartTotal(Cart cart) {
+        return cart.getCartItems().stream()
+                .mapToDouble(cartItem -> {
+                    Item item = cartItem.getItem();
+                    int quantity = cartItem.getQuantity();
+                    int requiredForSpecial = item.getRequiredQuantityForSpecialPrice();
+
+                    if (quantity >= requiredForSpecial) {
+                        int specialBundles = quantity / requiredForSpecial;
+                        int remainingItems = quantity % requiredForSpecial;
+                        return (specialBundles * item.getSpecialPrice()) + (remainingItems * item.getNormalPrice());
+                    } else {
+                        return quantity * item.getNormalPrice();
+                    }
+                })
+                .sum();
     }
 
     private Cart findCartById(Long cartId) {
         return cartRepository.findById(cartId)
-                .orElseThrow(() -> new IllegalArgumentException("Cart with id = " + cartId + "not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Cart with id = " + cartId + " not found"));
     }
 
     private Item findItemById(Long itemId) {
         return itemRepository.findById(itemId)
-                .orElseThrow(() -> new IllegalArgumentException("Item with id = " + itemId + "not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Item with id = " + itemId + " not found"));
     }
 }

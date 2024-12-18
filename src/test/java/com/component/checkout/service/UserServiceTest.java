@@ -4,7 +4,8 @@ import com.component.checkout.infrastructure.repository.RoleRepository;
 import com.component.checkout.infrastructure.repository.UserRepository;
 import com.component.checkout.model.Role;
 import com.component.checkout.model.User;
-import com.component.checkout.presentation.dto.AuthRequest;
+import com.component.checkout.presentation.dto.auth.AuthRequest;
+import com.component.checkout.presentation.dto.auth.AuthResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,15 +39,15 @@ class UserServiceTest {
         Role role = new Role();
         role.setName("ROLE_CLIENT");
 
-        when(userRepository.findUserByLogin("testuser")).thenReturn(null);
+        when(userRepository.findByLogin("testuser")).thenReturn(null);
         when(passwordEncoder.encode("password")).thenReturn("encodedPassword");
         when(roleRepository.findByName("ROLE_CLIENT")).thenReturn(Optional.of(role));
         when(userRepository.save(Mockito.any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        User savedUser = userService.registerUser(request);
+        AuthResponse savedUser = userService.register(request);
 
         assertNotNull(savedUser);
-        assertEquals("testuser", savedUser.getLogin());
+        assertEquals("testuser", savedUser.getUser());
         verify(userRepository, times(1)).save(Mockito.any(User.class));
     }
 
@@ -54,9 +55,9 @@ class UserServiceTest {
     void testRegisterUser_ThrowsException_WhenUserExists() {
         AuthRequest request = new AuthRequest("existingUser", "password");
 
-        when(userRepository.findUserByLogin("existingUser")).thenReturn(new User());
+        when(userRepository.findByLogin("existingUser")).thenReturn(Optional.of(new User()));
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(request));
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.register(request));
         assertEquals("User already exists with login: existingUser", exception.getMessage());
     }
 

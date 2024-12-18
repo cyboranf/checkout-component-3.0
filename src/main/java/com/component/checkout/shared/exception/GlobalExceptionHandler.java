@@ -1,6 +1,6 @@
 package com.component.checkout.shared.exception;
 
-import com.component.checkout.presentation.dto.AuthResponse;
+import com.component.checkout.presentation.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,11 +24,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<AuthResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
-        AuthResponse response = new AuthResponse.Builder()
-                .withSuccess(false)
-                .withMessage(ex.getMessage())
-                .build();
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+        ErrorResponse response = new ErrorResponse(false, ex.getMessage());
         return ResponseEntity.status(BAD_REQUEST_STATUS).body(response);
     }
 }

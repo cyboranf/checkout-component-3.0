@@ -1,8 +1,8 @@
-package com.component.checkout.presentation.dto;
+package com.component.checkout.presentation.dto.auth;
 
 public class AuthResponse {
 
-    private Long userId;
+    private String user;
     private boolean success;
     private String message;
     private String token;
@@ -11,14 +11,14 @@ public class AuthResponse {
     }
 
     private AuthResponse(Builder builder) {
-        this.userId = builder.userId;
+        this.user = builder.user;
         this.success = builder.success;
         this.message = builder.message;
         this.token = builder.token;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getUser() {
+        return user;
     }
 
     public boolean isSuccess() {
@@ -34,13 +34,13 @@ public class AuthResponse {
     }
 
     public static class Builder {
-        private Long userId;
+        private String user;
         private boolean success;
         private String message;
         private String token;
 
-        public Builder withUserId(Long userId) {
-            this.userId = userId;
+        public Builder withUserLogin(String login) {
+            this.user = login;
             return this;
         }
 
@@ -67,7 +67,7 @@ public class AuthResponse {
     @Override
     public String toString() {
         return "AuthResponse{" +
-                "userId=" + userId +
+                "user=" + user +
                 ", success=" + success +
                 ", message='" + message + '\'' +
                 ", token='" + token + '\'' +

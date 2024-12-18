@@ -1,27 +1,22 @@
 package com.component.checkout.presentation.mapper;
 
 import com.component.checkout.model.User;
-import com.component.checkout.presentation.dto.AuthResponse;
+import com.component.checkout.presentation.dto.auth.AuthResponse;
 
 public class UserMapper {
 
-    public static AuthResponse userToAuthResponse(User user, String token) {
-        AuthResponse.Builder builder = new AuthResponse.Builder()
-                .withUserId(user.getId())
+    public static AuthResponse toAuthResponse(User user) {
+        return new AuthResponse.Builder()
+                .withUserLogin(user.getLogin())
                 .withSuccess(true)
-                .withMessage(token != null ? "Authentication successful" : "Registration successful");
-
-        if (token != null) {
-            builder.withToken(token);
-        }
-
-        return builder.build();
+                .withMessage("Operation successful.")
+                .build();
     }
 
-    public static User authRequestToUser(String login, String password) {
+    public static User authRequestToUser(String login, String encodedPassword) {
         return new User.Builder()
                 .withLogin(login)
-                .withPassword(password)
+                .withPassword(encodedPassword)
                 .build();
     }
 }

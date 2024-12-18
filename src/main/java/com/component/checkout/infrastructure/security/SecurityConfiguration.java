@@ -38,6 +38,10 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 
+                        .requestMatchers(HttpMethod.POST, "/api/cart/{cartId}/items").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/api/cart/{cartId}").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/api/cart/{cartId}/checkout").hasRole("USER")
+
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception
