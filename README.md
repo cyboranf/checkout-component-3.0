@@ -66,7 +66,7 @@ Once the application is running, you can access the following endpoints:
       }
       ```
     - Or directly via query parameters:
-      `POST http://localhost:8080/api/cart/addItem?itemId=3&quantity=5`
+      `POST http://localhost:8080/api/cart/add-item?itemId=3&quantity=5`
     - Example response:
 ```json
 {
@@ -135,7 +135,7 @@ Once the application is running, you can access the following endpoints:
 }
 ```
 
-- **Finalize a purchase**: `POST http://localhost:8080/api/cart/finalizePurchase` Don't forget about barer
+- **Finalize a purchase**: `POST http://localhost:8080/api/cart/checkout` Don't forget about barer
 
   - Example response:
 

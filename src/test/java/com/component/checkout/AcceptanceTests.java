@@ -76,7 +76,7 @@ class AcceptanceTests {
         // 1) Register new user
         AuthRequest registerRequest = new AuthRequest("filip.2", "testPassword");
         ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
-                baseUrl + "/api/auth/beClient",
+                baseUrl + "/api/auth/be-client",
                 registerRequest,
                 AuthResponse.class
         );
@@ -90,7 +90,7 @@ class AcceptanceTests {
         // 2) Login (bringCart)
         AuthRequest loginRequest = new AuthRequest("filip.2", "testPassword");
         ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
-                baseUrl + "/api/auth/bringCart",
+                baseUrl + "/api/auth",
                 loginRequest,
                 AuthResponse.class
         );
@@ -139,7 +139,7 @@ class AcceptanceTests {
 
         HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(body, headers);
 
-        URI uri = URI.create(baseUrl + "/api/cart/addItem");
+        URI uri = URI.create(baseUrl + "/api/cart/add-item");
         return restTemplate.postForEntity(uri, requestEntity, CartResponse.class);
     }
 
@@ -149,7 +149,7 @@ class AcceptanceTests {
 
         HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
         return restTemplate.exchange(
-                baseUrl + "/api/cart/finalizePurchase",
+                baseUrl + "/api/cart/checkout",
                 HttpMethod.POST,
                 requestEntity,
                 ReceiptResponse.class
