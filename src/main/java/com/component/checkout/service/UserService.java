@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.Set;
 
 /**
  * Service responsible for handling user registration, login, and related operations.
@@ -64,7 +65,12 @@ public class UserService {
             throw new UserAlreadyExistsException("User already exists with login: " + request.login());
         }
 
+        Role roleClient = roleRepository.findByName("ROLE_CLIENT")
+                .orElseThrow(() -> new IllegalStateException("ROLE_CLIENT not found in the database"));
+
         User user = createUserFromRequest(request);
+        user.setRoles(Set.of(roleClient));
+
         User savedUser = userRepository.save(user);
 
         LOGGER.info("User registered successfully with login: {}", request.login());

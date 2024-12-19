@@ -6,6 +6,9 @@ public class ReceiptDiscountDto {
     private double totalDiscount;
     private double totalPriceWithDiscounts;
 
+    public ReceiptDiscountDto() {
+    }
+
     private ReceiptDiscountDto(Builder builder) {
         this.totalPriceBeforeDiscounts = builder.totalPriceBeforeDiscounts;
         this.totalDiscount = builder.totalDiscount;

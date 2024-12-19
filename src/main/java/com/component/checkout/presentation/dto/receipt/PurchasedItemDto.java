@@ -11,6 +11,9 @@ public class PurchasedItemDto {
     private double priceWithDiscounts;
     private ItemDiscountDto itemDiscount;
 
+    public PurchasedItemDto() {
+    }
+
     private PurchasedItemDto(Builder builder) {
         this.itemName = builder.itemName;
         this.quantity = builder.quantity;

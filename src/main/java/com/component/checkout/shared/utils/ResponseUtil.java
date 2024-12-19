@@ -29,15 +29,16 @@ public class ResponseUtil {
      * Builds a success response for a receipt-related operation.
      *
      * @param receiptDto The DTO representing the receipt.
-     * @param message A success message to include in the response.
+     * @param message    A success message to include in the response.
      * @return A ResponseEntity with a ReceiptResponse and HTTP 200 status.
      */
     public static ResponseEntity<ReceiptResponse> buildSuccessResponse(ReceiptDto receiptDto, String message) {
-        ReceiptResponse response = new ReceiptResponse.Builder()
-                .withReceipt(receiptDto)
-                .withSuccess(true)
-                .withMessage(message)
-                .build();
+        ReceiptResponse response = new ReceiptResponse(
+                receiptDto,
+                true,
+                message
+        );
+
         return ResponseEntity.ok(response);
     }
 
@@ -45,16 +46,16 @@ public class ResponseUtil {
      * Builds a success response for an authentication-related operation.
      *
      * @param authResponse The DTO representing the authenticated user and token.
-     * @param message A success message to include in the response.
+     * @param message      A success message to include in the response.
      * @return A ResponseEntity with an AuthResponse and HTTP 200 status.
      */
     public static ResponseEntity<AuthResponse> buildSuccessResponseAuth(AuthResponse authResponse, String message) {
-        AuthResponse response = new AuthResponse.Builder()
-                .withUserLogin(authResponse.getUser())
-                .withToken(authResponse.getToken())
-                .withSuccess(true)
-                .withMessage(message)
-                .build();
+        AuthResponse response = new AuthResponse(
+                authResponse.getUser(),
+                authResponse.getToken(),
+                true,
+                message
+        );
         return ResponseEntity.ok(response);
     }
 }

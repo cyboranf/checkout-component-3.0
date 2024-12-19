@@ -1,5 +1,11 @@
 package com.component.checkout.presentation.dto.promotion;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * DTO representing details for multi-priced promotions.
+ */
 public class MultiPricedPromoDetailsDto {
 
     private double singleNormalPrice;
@@ -7,11 +13,25 @@ public class MultiPricedPromoDetailsDto {
     private int quantityNormalPrice;
     private int quantitySpecialPrice;
 
-    private MultiPricedPromoDetailsDto(Builder builder) {
-        this.singleNormalPrice = builder.singleNormalPrice;
-        this.singleSpecialPrice = builder.singleSpecialPrice;
-        this.quantityNormalPrice = builder.quantityNormalPrice;
-        this.quantitySpecialPrice = builder.quantitySpecialPrice;
+    /**
+     * Public no-arg constructor required by Jackson for deserialization.
+     */
+    public MultiPricedPromoDetailsDto() {
+    }
+
+    /**
+     * Parameterized constructor with @JsonCreator for Jackson deserialization.
+     */
+    @JsonCreator
+    public MultiPricedPromoDetailsDto(
+            @JsonProperty("singleNormalPrice") double singleNormalPrice,
+            @JsonProperty("singleSpecialPrice") double singleSpecialPrice,
+            @JsonProperty("quantityNormalPrice") int quantityNormalPrice,
+            @JsonProperty("quantitySpecialPrice") int quantitySpecialPrice) {
+        this.singleNormalPrice = singleNormalPrice;
+        this.singleSpecialPrice = singleSpecialPrice;
+        this.quantityNormalPrice = quantityNormalPrice;
+        this.quantitySpecialPrice = quantitySpecialPrice;
     }
 
     public void setSingleNormalPrice(double singleNormalPrice) {
@@ -46,7 +66,19 @@ public class MultiPricedPromoDetailsDto {
         return quantitySpecialPrice;
     }
 
+    @Override
+    public String toString() {
+        return "MultiPricedPromoDetailsDto{" +
+                "singleNormalPrice=" + singleNormalPrice +
+                ", singleSpecialPrice=" + singleSpecialPrice +
+                ", quantityNormalPrice=" + quantityNormalPrice +
+                ", quantitySpecialPrice=" + quantitySpecialPrice +
+                '}';
+    }
 
+    /**
+     * Builder class for constructing MultiPricedPromoDetailsDto instances.
+     */
     public static class Builder {
 
         private double singleNormalPrice;
@@ -75,17 +107,8 @@ public class MultiPricedPromoDetailsDto {
         }
 
         public MultiPricedPromoDetailsDto build() {
-            return new MultiPricedPromoDetailsDto(this);
+            return new MultiPricedPromoDetailsDto(this.singleNormalPrice, this.singleSpecialPrice,
+                    this.quantityNormalPrice, this.quantitySpecialPrice);
         }
-    }
-
-    @Override
-    public String toString() {
-        return "MultiPricedPromoDetailsDto{" +
-                "singleNormalPrice=" + singleNormalPrice +
-                ", singleSpecialPrice=" + singleSpecialPrice +
-                ", quantityNormalPrice=" + quantityNormalPrice +
-                ", quantitySpecialPrice=" + quantitySpecialPrice +
-                '}';
     }
 }

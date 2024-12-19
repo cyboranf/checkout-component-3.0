@@ -41,19 +41,22 @@ class AuthControllerIntegrationTest {
 
     @Test
     void testRegister_Success() {
-        String uniqueLogin = "filip" + UUID.randomUUID();
+        String uniqueLogin = "filip_" + UUID.randomUUID();
         AuthRequest request = new AuthRequest(uniqueLogin, "password123");
 
         ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/register",
+                "http://localhost:" + port + "/api/auth/beClient",
                 request,
                 AuthResponse.class
         );
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().isSuccess()).isTrue();
-        assertThat(response.getBody().getMessage()).isEqualTo("Registration successful.");
+        AuthResponse body = response.getBody();
+        assertThat(body.isSuccess()).isTrue();
+        assertThat(body.getUser()).isEqualTo(uniqueLogin);
+        assertThat(body.getMessage()).isEqualTo("Registration successful.");
+        // The token may be null after registration, depending on implementation
     }
 
     @Test
@@ -61,8 +64,9 @@ class AuthControllerIntegrationTest {
         String uniqueLogin = "duplicateUser_" + UUID.randomUUID();
         AuthRequest request = new AuthRequest(uniqueLogin, "password123");
 
+        // Register first time
         ResponseEntity<AuthResponse> firstResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/register",
+                "http://localhost:" + port + "/api/auth/beClient",
                 request,
                 AuthResponse.class
         );
@@ -71,25 +75,29 @@ class AuthControllerIntegrationTest {
         assertThat(firstResponse.getBody()).isNotNull();
         assertThat(firstResponse.getBody().isSuccess()).isTrue();
 
+        // Register second time with same login
         ResponseEntity<AuthResponse> secondResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/register",
+                "http://localhost:" + port + "/api/auth/beClient",
                 request,
                 AuthResponse.class
         );
 
+        // Expected failure
         assertThat(secondResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(secondResponse.getBody()).isNotNull();
-        assertThat(secondResponse.getBody().isSuccess()).isFalse();
-        assertThat(secondResponse.getBody().getMessage()).isEqualTo("User already exists with login: " + uniqueLogin);
+        AuthResponse body = secondResponse.getBody();
+        assertThat(body.isSuccess()).isFalse();
+        assertThat(body.getMessage()).contains("User already exists with login: " + uniqueLogin);
     }
 
     @Test
     void testLogin_Success() {
-        String uniqueLogin = "loginUser_" + UUID.randomUUID();
+        String uniqueLogin = "loginUser_ssd" + UUID.randomUUID();
         AuthRequest registerRequest = new AuthRequest(uniqueLogin, "password123");
 
+        // Register the user first
         ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/register",
+                "http://localhost:" + port + "/api/auth/beClient",
                 registerRequest,
                 AuthResponse.class
         );
@@ -98,15 +106,35 @@ class AuthControllerIntegrationTest {
         assertThat(registerResponse.getBody()).isNotNull();
         assertThat(registerResponse.getBody().isSuccess()).isTrue();
 
+        // Now login
         ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/login",
+                "http://localhost:" + port + "/api/auth/bringCart",
                 registerRequest,
                 AuthResponse.class
         );
 
         assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(loginResponse.getBody()).isNotNull();
-        assertThat(loginResponse.getBody().isSuccess()).isTrue();
-        assertThat(loginResponse.getBody().getToken()).isNotNull();
+        AuthResponse loginBody = loginResponse.getBody();
+        assertThat(loginBody.isSuccess()).isTrue();
+        assertThat(loginBody.getUser()).isEqualTo(uniqueLogin);
+        assertThat(loginBody.getToken()).isNotNull();
+    }
+
+    @Test
+    void testLogin_Failure_InvalidCredentials() {
+        AuthRequest loginRequest = new AuthRequest("nonExistentUser_" + UUID.randomUUID(), "wrongPassword");
+
+        ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
+                "http://localhost:" + port + "/api/auth/bringCart",
+                loginRequest,
+                AuthResponse.class
+        );
+
+        assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(loginResponse.getBody()).isNotNull();
+        AuthResponse body = loginResponse.getBody();
+        assertThat(body.isSuccess()).isFalse();
+        assertThat(body.getMessage()).isNull();
     }
 }

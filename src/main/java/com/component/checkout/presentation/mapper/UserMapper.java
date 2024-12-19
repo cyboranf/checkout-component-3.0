@@ -16,12 +16,12 @@ public class UserMapper {
      * @return A fully populated AuthResponse.
      */
     public static AuthResponse toAuthResponse(User user, String token) {
-        return new AuthResponse.Builder()
-                .withUserLogin(user.getLogin())
-                .withToken(token)
-                .withSuccess(true)
-                .withMessage("Operation successful.")
-                .build();
+        return new AuthResponse(
+                user.getLogin(),
+                token,
+                true,
+                "Operation successful."
+        );
     }
 
     /**
@@ -31,11 +31,12 @@ public class UserMapper {
      * @return A fully populated AuthResponse without a token.
      */
     public static AuthResponse toAuthResponse(User user) {
-        return new AuthResponse.Builder()
-                .withUserLogin(user.getLogin())
-                .withSuccess(true)
-                .withMessage("Operation successful.")
-                .build();
+        return new AuthResponse(
+                user.getLogin(),
+                null,
+                true,
+                "Operation successful."
+        );
     }
 
     /**

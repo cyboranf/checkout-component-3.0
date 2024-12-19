@@ -10,6 +10,9 @@ public class CartItemDto {
     private int quantity;
     private MultiPricedPromoDetailsDto multiPricedPromoDetails;
 
+    public CartItemDto() {
+    }
+
     private CartItemDto(Builder builder) {
         this.cartItemId = builder.cartItemId;
         this.itemId = builder.itemId;
@@ -57,7 +60,6 @@ public class CartItemDto {
     public MultiPricedPromoDetailsDto getMultiPricedPromoDetails() {
         return multiPricedPromoDetails;
     }
-
 
     public static class Builder {
         private Long cartItemId;
