@@ -1,6 +1,7 @@
 package com.component.checkout.shared.exception;
 
 import com.component.checkout.presentation.dto.ErrorResponse;
+import com.component.checkout.presentation.dto.auth.AuthResponse;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;

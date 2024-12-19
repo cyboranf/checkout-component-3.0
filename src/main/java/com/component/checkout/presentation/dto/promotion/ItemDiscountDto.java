@@ -5,6 +5,9 @@ public class ItemDiscountDto {
     private String bundleDiscountDetails;
     private String multiPricedDiscountDetails;
 
+    public ItemDiscountDto() {
+    }
+
     private ItemDiscountDto(Builder builder) {
         this.bundleDiscountDetails = builder.bundleDiscountDetails;
         this.multiPricedDiscountDetails = builder.multiPricedDiscountDetails;

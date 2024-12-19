@@ -11,6 +11,9 @@ public class ReceiptDto {
     private List<PurchasedItemDto> purchasedItems;
     private ReceiptDiscountDto receiptDiscount;
 
+    public ReceiptDto() {
+    }
+
     private ReceiptDto(Builder builder) {
         this.receiptId = builder.receiptId;
         this.issuedAt = builder.issuedAt;
@@ -49,7 +52,6 @@ public class ReceiptDto {
     public ReceiptDiscountDto getReceiptDiscount() {
         return receiptDiscount;
     }
-
 
     public static class Builder {
 

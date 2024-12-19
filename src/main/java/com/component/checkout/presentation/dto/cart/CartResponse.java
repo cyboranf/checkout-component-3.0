@@ -1,15 +1,23 @@
 package com.component.checkout.presentation.dto.cart;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CartResponse {
 
     private final CartDto cart;
     private final boolean success;
     private final String message;
 
-    private CartResponse(Builder builder) {
-        this.cart = builder.cart;
-        this.success = builder.success;
-        this.message = builder.message;
+    @JsonCreator
+    public CartResponse(
+            @JsonProperty("cart") CartDto cart,
+            @JsonProperty("success") boolean success,
+            @JsonProperty("message") String message
+    ) {
+        this.cart = cart;
+        this.success = success;
+        this.message = message;
     }
 
     public CartDto getCart() {
@@ -45,7 +53,7 @@ public class CartResponse {
         }
 
         public CartResponse build() {
-            return new CartResponse(this);
+            return new CartResponse(cart, success, message);
         }
     }
 

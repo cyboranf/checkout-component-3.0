@@ -50,8 +50,8 @@ public class SecurityConfiguration {
 
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 
-                        .requestMatchers(HttpMethod.POST, "/api/cart/add-items").hasAuthority("ROLE_CLIENT")
-                        .requestMatchers(HttpMethod.POST, "/api/cart/finalizePurchase").hasAuthority("ROLE_CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/cart/addItem").hasRole("CLIENT")
+                        .requestMatchers(HttpMethod.POST, "/api/cart/finalizePurchase").hasRole("CLIENT")
 
                         .anyRequest().authenticated()
                 )

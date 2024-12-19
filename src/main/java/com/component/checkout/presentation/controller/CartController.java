@@ -49,9 +49,9 @@ class CartController {
 
     /**
      * Adds an item with the specified quantity to the client's cart.
-
+     * <p>
      * Path: POST /api/cart/addItem
-
+     *
      * @param itemId   The ID of the item to add.
      * @param quantity The quantity of the item to add (must be at least 1).
      * @param request  The HttpServletRequest for authentication context.
@@ -70,9 +70,9 @@ class CartController {
 
     /**
      * Finalizes the purchase process and generates a receipt for the items in the client's cart.
-
+     * <p>
      * Path: POST /api/cart/finalizePurchase
-
+     *
      * @param request The HttpServletRequest for authentication context.
      * @return A ResponseEntity containing the receipt and a success message.
      */

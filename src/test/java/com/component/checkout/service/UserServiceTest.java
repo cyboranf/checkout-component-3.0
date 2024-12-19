@@ -8,10 +8,17 @@ import com.component.checkout.model.Role;
 import com.component.checkout.model.User;
 import com.component.checkout.presentation.dto.auth.AuthRequest;
 import com.component.checkout.presentation.dto.auth.AuthResponse;
+import com.component.checkout.shared.exception.AuthenticationFailedException;
+import com.component.checkout.shared.exception.UserAlreadyExistsException;
+import com.component.checkout.shared.exception.UserNotFoundException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -68,7 +75,7 @@ class UserServiceTest {
 
         when(userRepository.existsByLogin("existingUser")).thenReturn(true);
 
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.register(request));
+        UserAlreadyExistsException exception = assertThrows(UserAlreadyExistsException.class, () -> userService.register(request));
         assertEquals("User already exists with login: existingUser", exception.getMessage());
     }
 
@@ -78,27 +85,61 @@ class UserServiceTest {
         User user = new User();
         user.setLogin("testuser");
 
+        // Mock authentication
         Authentication authentication = mock(Authentication.class);
-        when(authenticationManager.authenticate(any())).thenReturn(authentication);
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(user);
         when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwtToken");
         when(userRepository.findByLogin("testuser")).thenReturn(Optional.of(user));
 
-//        AuthResponse response = userService.login(request);
-//
-//        assertNotNull(response);
-//        assertEquals("testuser", response.getUser());
-//        assertEquals("jwtToken", response.getToken());
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        ArgumentCaptor<Cookie> cookieCaptor = ArgumentCaptor.forClass(Cookie.class);
+        doNothing().when(response).addCookie(cookieCaptor.capture());
+
+        AuthResponse authResponse = userService.login(request, response);
+
+        assertNotNull(authResponse);
+        assertEquals("testuser", authResponse.getUser());
+        assertEquals("jwtToken", authResponse.getToken());
+
+        // Verify cookie was added
+        verify(response, times(1)).addCookie(any(Cookie.class));
+        Cookie jwtCookie = cookieCaptor.getValue();
+        assertEquals("jwt_token", jwtCookie.getName());
+        assertEquals("/", jwtCookie.getPath());
+        assertTrue(jwtCookie.isHttpOnly());
     }
 
     @Test
     void testLogin_Failure_InvalidCredentials() {
-        AuthRequest request = new AuthRequest("invalidUser", "password");
+        AuthRequest request = new AuthRequest("invalidUser", "wrongPassword");
 
-        when(authenticationManager.authenticate(any())).thenThrow(new IllegalArgumentException("Invalid credentials"));
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
+                .thenThrow(new RuntimeException("Bad credentials"));
 
-//        Exception exception = assertThrows(IllegalArgumentException.class, () -> userService.login(request));
-//        assertEquals("Invalid credentials", exception.getMessage());
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        AuthenticationFailedException exception = assertThrows(AuthenticationFailedException.class, () -> userService.login(request, response));
+        assertTrue(exception.getMessage().contains("Invalid credentials provided for user invalidUser"));
+    }
+
+    @Test
+    void testLogin_Failure_UserNotFound() {
+        AuthRequest request = new AuthRequest("nonExistent", "password");
+        User user = new User();
+        user.setLogin("nonExistent");
+
+        // Mock authentication succeeds but user not found in DB after that
+        Authentication authentication = mock(Authentication.class);
+        when(authenticationManager.authenticate(any())).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(user);
+        when(jwtTokenProvider.generateToken(authentication)).thenReturn("jwtToken");
+        when(userRepository.findByLogin("nonExistent")).thenReturn(Optional.empty());
+
+        HttpServletResponse response = mock(HttpServletResponse.class);
+
+        UserNotFoundException exception = assertThrows(UserNotFoundException.class, () -> userService.login(request, response));
+        assertEquals("User with login = nonExistent not found", exception.getMessage());
     }
 
     @Test

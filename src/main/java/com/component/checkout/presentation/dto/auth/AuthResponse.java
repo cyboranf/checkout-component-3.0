@@ -1,5 +1,8 @@
 package com.component.checkout.presentation.dto.auth;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class AuthResponse {
 
     private final String user;
@@ -7,11 +10,17 @@ public class AuthResponse {
     private final String message;
     private final String token;
 
-    private AuthResponse(Builder builder) {
-        this.user = builder.user;
-        this.success = builder.success;
-        this.message = builder.message;
-        this.token = builder.token;
+    @JsonCreator
+    public AuthResponse(
+            @JsonProperty("user") String user,
+            @JsonProperty("token") String token,
+            @JsonProperty("success") boolean success,
+            @JsonProperty("message") String message
+    ) {
+        this.user = user;
+        this.token = token;
+        this.success = success;
+        this.message = message;
     }
 
     public String getUser() {
@@ -28,47 +37,5 @@ public class AuthResponse {
 
     public String getToken() {
         return token;
-    }
-
-    public static class Builder {
-
-        private String user;
-        private boolean success;
-        private String message;
-        private String token;
-
-        public Builder withUserLogin(String login) {
-            this.user = login;
-            return this;
-        }
-
-        public Builder withSuccess(boolean success) {
-            this.success = success;
-            return this;
-        }
-
-        public Builder withMessage(String message) {
-            this.message = message;
-            return this;
-        }
-
-        public Builder withToken(String token) {
-            this.token = token;
-            return this;
-        }
-
-        public AuthResponse build() {
-            return new AuthResponse(this);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "AuthResponse{" +
-                "user=" + user +
-                ", success=" + success +
-                ", message='" + message + '\'' +
-                ", token='" + token + '\'' +
-                '}';
     }
 }

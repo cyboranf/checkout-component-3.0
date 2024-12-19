@@ -29,6 +29,13 @@ public class Item {
     public Item() {
     }
 
+    public Item(String name, double normalPrice, int requiredQuantityForSpecialPrice, double specialPrice) {
+        this.name = name;
+        this.normalPrice = normalPrice;
+        this.requiredQuantityForSpecialPrice = requiredQuantityForSpecialPrice;
+        this.specialPrice = specialPrice;
+    }
+
     private Item(Builder builder) {
         this.id = builder.id;
         this.name = builder.name;

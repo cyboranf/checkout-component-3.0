@@ -2,6 +2,8 @@ package com.component.checkout.presentation.dto.cart;
 
 import com.component.checkout.presentation.dto.cartItem.CartItemDto;
 import com.component.checkout.presentation.dto.promotion.BundleDiscountsPromoDto;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -12,11 +14,17 @@ public class CartDto {
     private final double totalPrice;
     private final List<BundleDiscountsPromoDto> bundleDiscountsPromos;
 
-    private CartDto(Builder builder) {
-        this.cartId = builder.cartId;
-        this.totalPrice = builder.totalPrice;
-        this.cartItems = builder.cartItems;
-        this.bundleDiscountsPromos = builder.bundleDiscountsPromos;
+    @JsonCreator
+    public CartDto(
+            @JsonProperty("cartId") Long cartId,
+            @JsonProperty("cartItems") List<CartItemDto> cartItems,
+            @JsonProperty("totalPrice") double totalPrice,
+            @JsonProperty("bundleDiscountsPromos") List<BundleDiscountsPromoDto> bundleDiscountsPromos
+    ) {
+        this.cartId = cartId;
+        this.cartItems = cartItems;
+        this.totalPrice = totalPrice;
+        this.bundleDiscountsPromos = bundleDiscountsPromos;
     }
 
     public Long getCartId() {
@@ -63,7 +71,8 @@ public class CartDto {
         }
 
         public CartDto build() {
-            return new CartDto(this);
+            // Use the annotated constructor here
+            return new CartDto(cartId, cartItems, totalPrice, bundleDiscountsPromos);
         }
     }
 
@@ -77,4 +86,3 @@ public class CartDto {
                 '}';
     }
 }
-
