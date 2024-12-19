@@ -37,7 +37,7 @@ class CartController {
      * Handles OPTIONS requests for the cart resource, providing allowed methods and headers.
      */
     @RequestMapping(method = RequestMethod.OPTIONS)
-    public ResponseEntity<Void> options() {
+    ResponseEntity<Void> options() {
         LOGGER.info("Received OPTIONS request at /api/cart");
         return ResponseEntity.ok()
                 .header("Allow", "OPTIONS, GET, POST")
@@ -57,7 +57,7 @@ class CartController {
      * @param request  The HttpServletRequest for authentication context.
      * @return A ResponseEntity containing the updated cart state and a success message.
      */
-    @PostMapping("/addItem")
+    @PostMapping("/add-item")
     ResponseEntity<CartResponse> addItemToCart(
             @RequestParam @NotNull Long itemId,
             @RequestParam @Min(value = 1, message = "Quantity must be at least 1") int quantity,
@@ -76,7 +76,7 @@ class CartController {
      * @param request The HttpServletRequest for authentication context.
      * @return A ResponseEntity containing the receipt and a success message.
      */
-    @PostMapping("/finalizePurchase")
+    @PostMapping("/checkout")
     ResponseEntity<ReceiptResponse> checkout(HttpServletRequest request) {
         ReceiptDto receiptDto = cartService.finalizePurchase(request);
         return ResponseUtil.buildSuccessResponse(receiptDto, "Checkout completed successfully.");
