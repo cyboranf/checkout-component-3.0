@@ -48,4 +48,13 @@ public class CartResponse {
             return new CartResponse(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "CartResponse{" +
+                "cart=" + cart +
+                ", success=" + success +
+                ", message='" + message + '\'' +
+                '}';
+    }
 }

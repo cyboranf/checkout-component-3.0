@@ -2,13 +2,10 @@ package com.component.checkout.presentation.dto.auth;
 
 public class AuthResponse {
 
-    private String user;
-    private boolean success;
-    private String message;
-    private String token;
-
-    public AuthResponse() {
-    }
+    private final String user;
+    private final boolean success;
+    private final String message;
+    private final String token;
 
     private AuthResponse(Builder builder) {
         this.user = builder.user;
@@ -34,6 +31,7 @@ public class AuthResponse {
     }
 
     public static class Builder {
+
         private String user;
         private boolean success;
         private String message;

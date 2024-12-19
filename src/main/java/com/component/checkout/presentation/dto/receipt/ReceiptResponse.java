@@ -16,15 +16,13 @@ public class ReceiptResponse {
         return receipt;
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
     public String getMessage() {
         return message;
     }
 
+
     public static class Builder {
+
         private ReceiptDto receipt;
         private boolean success;
         private String message;

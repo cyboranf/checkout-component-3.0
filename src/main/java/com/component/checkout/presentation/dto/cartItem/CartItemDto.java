@@ -10,45 +10,54 @@ public class CartItemDto {
     private int quantity;
     private MultiPricedPromoDetailsDto multiPricedPromoDetails;
 
-    public Long getCartItemId() {
-        return cartItemId;
+    private CartItemDto(Builder builder) {
+        this.cartItemId = builder.cartItemId;
+        this.itemId = builder.itemId;
+        this.cartId = builder.cartId;
+        this.quantity = builder.quantity;
+        this.multiPricedPromoDetails = builder.multiPricedPromoDetails;
     }
 
     public void setCartItemId(Long cartItemId) {
         this.cartItemId = cartItemId;
     }
 
-    public Long getItemId() {
-        return itemId;
-    }
-
     public void setItemId(Long itemId) {
         this.itemId = itemId;
-    }
-
-    public Long getCartId() {
-        return cartId;
     }
 
     public void setCartId(Long cartId) {
         this.cartId = cartId;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void setMultiPricedPromoDetails(MultiPricedPromoDetailsDto multiPricedPromoDetails) {
+        this.multiPricedPromoDetails = multiPricedPromoDetails;
+    }
+
+    public Long getCartItemId() {
+        return cartItemId;
+    }
+
+    public Long getItemId() {
+        return itemId;
+    }
+
+    public Long getCartId() {
+        return cartId;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 
     public MultiPricedPromoDetailsDto getMultiPricedPromoDetails() {
         return multiPricedPromoDetails;
     }
 
-    public void setMultiPricedPromoDetails(MultiPricedPromoDetailsDto multiPricedPromoDetails) {
-        this.multiPricedPromoDetails = multiPricedPromoDetails;
-    }
 
     public static class Builder {
         private Long cartItemId;
@@ -83,13 +92,7 @@ public class CartItemDto {
         }
 
         public CartItemDto build() {
-            CartItemDto cartItemDto = new CartItemDto();
-            cartItemDto.setCartItemId(this.cartItemId);
-            cartItemDto.setItemId(this.itemId);
-            cartItemDto.setCartId(this.cartId);
-            cartItemDto.setQuantity(this.quantity);
-            cartItemDto.setMultiPricedPromoDetails(this.multiPricedPromoDetails);
-            return cartItemDto;
+            return new CartItemDto(this);
         }
     }
 

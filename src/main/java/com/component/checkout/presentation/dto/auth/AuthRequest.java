@@ -3,6 +3,9 @@ package com.component.checkout.presentation.dto.auth;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+/**
+ * AuthRequest
+ */
 public record AuthRequest(
         @NotBlank(message = "Login is mandatory")
         @Size(min = 3, max = 50, message = "Login must be between 3 and 50 characters")

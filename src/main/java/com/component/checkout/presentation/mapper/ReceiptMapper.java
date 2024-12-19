@@ -9,8 +9,21 @@ import com.component.checkout.presentation.dto.receipt.ReceiptDto;
 
 import java.util.stream.Collectors;
 
+/**
+ * Maps Receipt entities and related data to ReceiptDto objects for presentation.
+ */
 public class ReceiptMapper {
 
+    /**
+     * Converts a Receipt and its associated pricing details into a ReceiptDto.
+     * <p> FinalizePurchase / Checkout operation. </p>
+     *
+     * @param receipt                   The persisted Receipt entity.
+     * @param totalPriceBeforeDiscounts The total price before any discounts.
+     * @param totalDiscount             The total amount of discounts applied.
+     * @param totalPriceWithDiscounts   The final price after discounts.
+     * @return A ReceiptDto representing the finalized purchase.
+     */
     public static ReceiptDto toDto(Receipt receipt,
                                    double totalPriceBeforeDiscounts,
                                    double totalDiscount,
@@ -31,6 +44,9 @@ public class ReceiptMapper {
                 .build();
     }
 
+    /**
+     * Converts a single CartItem to a PurchasedItemDto, including discount details.
+     */
     private static PurchasedItemDto toPurchasedItemDto(CartItem cartItem) {
         double priceBeforeDiscount = cartItem.getQuantity() * cartItem.getSingleNormalPrice();
         double priceWithDiscounts = (cartItem.getQuantitySpecialPrice() * cartItem.getSingleSpecialPrice()) +
@@ -47,6 +63,9 @@ public class ReceiptMapper {
                 .build();
     }
 
+    /**
+     * Builds an ItemDiscountDto with details about multi-pricing and bundle promotions.
+     */
     private static ItemDiscountDto toItemDiscountDto(CartItem cartItem) {
         double multiPricedDiscount = (cartItem.getQuantitySpecialPrice() * cartItem.getSingleNormalPrice()) -
                 (cartItem.getQuantitySpecialPrice() * cartItem.getSingleSpecialPrice());
@@ -68,6 +87,9 @@ public class ReceiptMapper {
                 .build();
     }
 
+    /**
+     * Builds a ReceiptDiscountDto with aggregated discount details.
+     */
     private static ReceiptDiscountDto toReceiptDiscountDto(double totalPriceBeforeDiscounts,
                                                            double totalDiscount,
                                                            double totalPriceWithDiscounts) {

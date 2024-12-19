@@ -36,6 +36,7 @@ public class CartDto {
     }
 
     public static class Builder {
+
         private Long cartId;
         private List<CartItemDto> cartItems;
         private double totalPrice;
@@ -64,6 +65,16 @@ public class CartDto {
         public CartDto build() {
             return new CartDto(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CartDto{" +
+                "cartId=" + cartId +
+                ", cartItems=" + cartItems +
+                ", totalPrice=" + totalPrice +
+                ", bundleDiscountsPromos=" + bundleDiscountsPromos +
+                '}';
     }
 }
 

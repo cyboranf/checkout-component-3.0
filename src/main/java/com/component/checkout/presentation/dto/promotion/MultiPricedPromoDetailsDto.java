@@ -7,71 +7,75 @@ public class MultiPricedPromoDetailsDto {
     private int quantityNormalPrice;
     private int quantitySpecialPrice;
 
-    public double getSingleNormalPrice() {
-        return singleNormalPrice;
+    private MultiPricedPromoDetailsDto(Builder builder) {
+        this.singleNormalPrice = builder.singleNormalPrice;
+        this.singleSpecialPrice = builder.singleSpecialPrice;
+        this.quantityNormalPrice = builder.quantityNormalPrice;
+        this.quantitySpecialPrice = builder.quantitySpecialPrice;
     }
 
     public void setSingleNormalPrice(double singleNormalPrice) {
         this.singleNormalPrice = singleNormalPrice;
     }
 
-    public double getSingleSpecialPrice() {
-        return singleSpecialPrice;
-    }
-
     public void setSingleSpecialPrice(double singleSpecialPrice) {
         this.singleSpecialPrice = singleSpecialPrice;
-    }
-
-    public int getQuantityNormalPrice() {
-        return quantityNormalPrice;
     }
 
     public void setQuantityNormalPrice(int quantityNormalPrice) {
         this.quantityNormalPrice = quantityNormalPrice;
     }
 
-    public int getQuantitySpecialPrice() {
-        return quantitySpecialPrice;
-    }
-
     public void setQuantitySpecialPrice(int quantitySpecialPrice) {
         this.quantitySpecialPrice = quantitySpecialPrice;
     }
 
+    public double getSingleNormalPrice() {
+        return singleNormalPrice;
+    }
+
+    public double getSingleSpecialPrice() {
+        return singleSpecialPrice;
+    }
+
+    public int getQuantityNormalPrice() {
+        return quantityNormalPrice;
+    }
+
+    public int getQuantitySpecialPrice() {
+        return quantitySpecialPrice;
+    }
+
+
     public static class Builder {
+
         private double singleNormalPrice;
-        private double singleFinalPrice;
-        private int quantityWithNormalPrice;
-        private int quantityWithFinalPrice;
+        private double singleSpecialPrice;
+        private int quantityNormalPrice;
+        private int quantitySpecialPrice;
 
         public Builder withSingleNormalPrice(double singleNormalPrice) {
             this.singleNormalPrice = singleNormalPrice;
             return this;
         }
 
-        public Builder withSingleFinalPrice(double singleFinalPrice) {
-            this.singleFinalPrice = singleFinalPrice;
+        public Builder withSingleFinalPrice(double singleSpecialPrice) {
+            this.singleSpecialPrice = singleSpecialPrice;
             return this;
         }
 
         public Builder withQuantityWithNormalPrice(int quantityWithNormalPrice) {
-            this.quantityWithNormalPrice = quantityWithNormalPrice;
+            this.quantityNormalPrice = quantityWithNormalPrice;
             return this;
         }
 
         public Builder withQuantityWithFinalPrice(int quantityWithFinalPrice) {
-            this.quantityWithFinalPrice = quantityWithFinalPrice;
+            this.quantitySpecialPrice = quantityWithFinalPrice;
             return this;
         }
 
         public MultiPricedPromoDetailsDto build() {
-            MultiPricedPromoDetailsDto dto = new MultiPricedPromoDetailsDto();
-            dto.setSingleNormalPrice(this.singleNormalPrice);
-            dto.setSingleSpecialPrice(this.singleFinalPrice);
-            dto.setQuantityNormalPrice(this.quantityWithNormalPrice);
-            dto.setQuantitySpecialPrice(this.quantityWithFinalPrice);
-            return dto;
+            return new MultiPricedPromoDetailsDto(this);
         }
     }
 }

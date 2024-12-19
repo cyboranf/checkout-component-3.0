@@ -4,8 +4,17 @@ import com.component.checkout.model.CartItem;
 import com.component.checkout.presentation.dto.cartItem.CartItemDto;
 import com.component.checkout.presentation.dto.promotion.MultiPricedPromoDetailsDto;
 
+/**
+ * Maps CartItem entities to CartItemDto objects.
+ */
 public class CartItemMapper {
 
+    /**
+     * Converts a CartItem to a CartItemDto.
+     *
+     * @param cartItem The CartItem entity to map.
+     * @return A CartItemDto representing the cart item's state.
+     */
     public static CartItemDto toDto(CartItem cartItem) {
         return new CartItemDto.Builder()
                 .withCartItemId(cartItem.getId())
@@ -16,6 +25,9 @@ public class CartItemMapper {
                 .build();
     }
 
+    /**
+     * Extracts multi-priced promotional details from the CartItem.
+     */
     public static MultiPricedPromoDetailsDto toMultiPricedDto(CartItem cartItem) {
         return new MultiPricedPromoDetailsDto.Builder()
                 .withSingleNormalPrice(cartItem.getSingleNormalPrice())

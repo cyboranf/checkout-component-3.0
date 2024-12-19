@@ -6,31 +6,40 @@ public class ReceiptDiscountDto {
     private double totalDiscount;
     private double totalPriceWithDiscounts;
 
-    public double getTotalPriceBeforeDiscounts() {
-        return totalPriceBeforeDiscounts;
+    private ReceiptDiscountDto(Builder builder) {
+        this.totalPriceBeforeDiscounts = builder.totalPriceBeforeDiscounts;
+        this.totalDiscount = builder.totalDiscount;
+        this.totalPriceWithDiscounts = builder.totalPriceWithDiscounts;
     }
 
     public void setTotalPriceBeforeDiscounts(double totalPriceBeforeDiscounts) {
         this.totalPriceBeforeDiscounts = totalPriceBeforeDiscounts;
     }
 
-    public double getTotalDiscount() {
-        return totalDiscount;
-    }
-
     public void setTotalDiscount(double totalDiscount) {
         this.totalDiscount = totalDiscount;
+    }
+
+
+    public void setTotalPriceWithDiscounts(double totalPriceWithDiscounts) {
+        this.totalPriceWithDiscounts = totalPriceWithDiscounts;
+    }
+
+    public double getTotalPriceBeforeDiscounts() {
+        return totalPriceBeforeDiscounts;
+    }
+
+    public double getTotalDiscount() {
+        return totalDiscount;
     }
 
     public double getTotalPriceWithDiscounts() {
         return totalPriceWithDiscounts;
     }
 
-    public void setTotalPriceWithDiscounts(double totalPriceWithDiscounts) {
-        this.totalPriceWithDiscounts = totalPriceWithDiscounts;
-    }
 
     public static class Builder {
+
         private double totalPriceBeforeDiscounts;
         private double totalDiscount;
         private double totalPriceWithDiscounts;
@@ -51,11 +60,7 @@ public class ReceiptDiscountDto {
         }
 
         public ReceiptDiscountDto build() {
-            ReceiptDiscountDto receiptDiscountDto = new ReceiptDiscountDto();
-            receiptDiscountDto.setTotalPriceBeforeDiscounts(this.totalPriceBeforeDiscounts);
-            receiptDiscountDto.setTotalDiscount(this.totalDiscount);
-            receiptDiscountDto.setTotalPriceWithDiscounts(this.totalPriceWithDiscounts);
-            return receiptDiscountDto;
+            return new ReceiptDiscountDto(this);
         }
     }
 }
