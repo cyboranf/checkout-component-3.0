@@ -45,7 +45,7 @@ class AuthControllerIntegrationTest {
         AuthRequest request = new AuthRequest(uniqueLogin, "password123");
 
         ResponseEntity<AuthResponse> response = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/beClient",
+                "http://localhost:" + port + "/api/auth/be-client",
                 request,
                 AuthResponse.class
         );
@@ -66,7 +66,7 @@ class AuthControllerIntegrationTest {
 
         // Register first time
         ResponseEntity<AuthResponse> firstResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/beClient",
+                "http://localhost:" + port + "/api/auth/be-client",
                 request,
                 AuthResponse.class
         );
@@ -77,7 +77,7 @@ class AuthControllerIntegrationTest {
 
         // Register second time with same login
         ResponseEntity<AuthResponse> secondResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/beClient",
+                "http://localhost:" + port + "/api/auth/be-client",
                 request,
                 AuthResponse.class
         );
@@ -97,7 +97,7 @@ class AuthControllerIntegrationTest {
 
         // Register the user first
         ResponseEntity<AuthResponse> registerResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/beClient",
+                "http://localhost:" + port + "/api/auth/be-client",
                 registerRequest,
                 AuthResponse.class
         );
@@ -108,7 +108,7 @@ class AuthControllerIntegrationTest {
 
         // Now login
         ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/bringCart",
+                "http://localhost:" + port + "/api/auth",
                 registerRequest,
                 AuthResponse.class
         );
@@ -126,7 +126,7 @@ class AuthControllerIntegrationTest {
         AuthRequest loginRequest = new AuthRequest("nonExistentUser_" + UUID.randomUUID(), "wrongPassword");
 
         ResponseEntity<AuthResponse> loginResponse = restTemplate.postForEntity(
-                "http://localhost:" + port + "/api/auth/bringCart",
+                "http://localhost:" + port + "/api/auth",
                 loginRequest,
                 AuthResponse.class
         );

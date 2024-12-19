@@ -17,7 +17,10 @@ To start, clone the repository from GitHub:
 git clone https://github.com/cyboranf/checkout-component-3.0.git
 cd checkout-component-3.0
 ```
-
+## Build the Application
+```bash
+mvn clean package
+````
 ## Run Tests
 To verify that everything is working correctly, run the test suite:
 ```bash
@@ -66,7 +69,7 @@ Once the application is running, you can access the following endpoints:
       }
       ```
     - Or directly via query parameters:
-      `POST http://localhost:8080/api/cart/addItem?itemId=3&quantity=5`
+      `POST http://localhost:8080/api/cart/add-item?itemId=3&quantity=5`
     - Example response:
 ```json
 {
@@ -135,7 +138,7 @@ Once the application is running, you can access the following endpoints:
 }
 ```
 
-- **Finalize a purchase**: `POST http://localhost:8080/api/cart/finalizePurchase` Don't forget about barer
+- **Finalize a purchase**: `POST http://localhost:8080/api/cart/checkout` Don't forget about barer
 
   - Example response:
 
