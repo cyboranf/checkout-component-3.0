@@ -17,7 +17,10 @@ To start, clone the repository from GitHub:
 git clone https://github.com/cyboranf/checkout-component-3.0.git
 cd checkout-component-3.0
 ```
-
+## Build the Application
+```bash
+mvn clean package
+````
 ## Run Tests
 To verify that everything is working correctly, run the test suite:
 ```bash
