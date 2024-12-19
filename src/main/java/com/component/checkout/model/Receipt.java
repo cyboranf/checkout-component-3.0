@@ -2,7 +2,6 @@ package com.component.checkout.model;
 
 import jakarta.persistence.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,7 +12,7 @@ public class Receipt {
     private Long id;
 
     @Column(nullable = false)
-    private Date issuedAt;
+    private String issuedAt;
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinTable(
@@ -40,7 +39,7 @@ public class Receipt {
         return id;
     }
 
-    public Date getIssuedAt() {
+    public String getIssuedAt() {
         return issuedAt;
     }
 
@@ -56,7 +55,7 @@ public class Receipt {
         this.id = id;
     }
 
-    public void setIssuedAt(Date issuedAt) {
+    public void setIssuedAt(String issuedAt) {
         this.issuedAt = issuedAt;
     }
 
@@ -70,7 +69,7 @@ public class Receipt {
 
     public static class Builder {
         private Long id;
-        private Date issuedAt;
+        private String issuedAt;
         private List<CartItem> purchasedItems;
         private double totalAmount;
 
@@ -79,7 +78,7 @@ public class Receipt {
             return this;
         }
 
-        public Builder withIssuedAt(Date issuedAt) {
+        public Builder withIssuedAt(String issuedAt) {
             this.issuedAt = issuedAt;
             return this;
         }

@@ -38,13 +38,13 @@ public class CartController {
             @RequestParam @Min(value = 1, message = "Quantity must be at least 1") int quantity,
             HttpServletRequest request) {
 
-        CartDto cartDto = cartService.addItemToCart(itemId, quantity, request);
+        CartDto cartDto = cartService.addItemToClientCart(itemId, quantity, request);
         return ResponseUtil.buildSuccessResponse(cartDto, "Item added successfully to the cart.");
     }
 
     @PostMapping("/checkout")
     public ResponseEntity<ReceiptResponse> checkout(HttpServletRequest request) {
-        ReceiptDto receiptDto = cartService.checkout(request);
+        ReceiptDto receiptDto = cartService.finalizePurchase(request);
         return ResponseUtil.buildSuccessResponse(receiptDto, "Checkout completed successfully.");
     }
 }

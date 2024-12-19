@@ -8,7 +8,7 @@ import java.util.List;
 public class ReceiptDto {
 
     private Long receiptId;
-    private Date issuedAt;
+    private String issuedAt;
     private List<PurchasedItemDto> purchasedItems;
     private ReceiptDiscountDto receiptDiscount;
 
@@ -20,11 +20,11 @@ public class ReceiptDto {
         this.receiptId = receiptId;
     }
 
-    public Date getIssuedAt() {
+    public String getIssuedAt() {
         return issuedAt;
     }
 
-    public void setIssuedAt(Date issuedAt) {
+    public void setIssuedAt(String issuedAt) {
         this.issuedAt = issuedAt;
     }
 
@@ -46,7 +46,7 @@ public class ReceiptDto {
 
     public static class Builder {
         private Long receiptId;
-        private Date issuedAt;
+        private String issuedAt;
         private List<PurchasedItemDto> purchasedItems;
         private ReceiptDiscountDto receiptDiscount;
 
@@ -55,7 +55,7 @@ public class ReceiptDto {
             return this;
         }
 
-        public Builder withIssuedAt(Date issuedAt) {
+        public Builder withIssuedAt(String issuedAt) {
             this.issuedAt = issuedAt;
             return this;
         }
