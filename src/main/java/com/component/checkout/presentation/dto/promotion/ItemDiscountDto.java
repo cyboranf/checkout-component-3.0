@@ -46,4 +46,12 @@ public class ItemDiscountDto {
             return new ItemDiscountDto(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ItemDiscountDto{" +
+                "bundleDiscountDetails='" + bundleDiscountDetails + '\'' +
+                ", multiPricedDiscountDetails='" + multiPricedDiscountDetails + '\'' +
+                '}';
+    }
 }

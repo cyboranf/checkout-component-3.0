@@ -117,4 +117,16 @@ public class PurchasedItemDto {
             return new PurchasedItemDto(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "PurchasedItemDto{" +
+                "itemName='" + itemName + '\'' +
+                ", quantity=" + quantity +
+                ", pricePerOneItem=" + pricePerOneItem +
+                ", priceBeforeDiscounts=" + priceBeforeDiscounts +
+                ", priceWithDiscounts=" + priceWithDiscounts +
+                ", itemDiscount=" + itemDiscount +
+                '}';
+    }
 }

@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * UserDetailsServiceImpl loads user data from the database and converts it to Spring Security's UserDetails object.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -21,6 +24,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Loads the user's details by their login.
+     *
+     * @param login The user's login (username).
+     * @return A UserDetails object representing the user.
+     * @throws UsernameNotFoundException if no user is found for the given login.
+     */
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         User user = userRepository.findByLogin(login)

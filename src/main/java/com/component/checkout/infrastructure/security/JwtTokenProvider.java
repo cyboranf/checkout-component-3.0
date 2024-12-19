@@ -21,6 +21,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * JwtTokenProvider is responsible for generating, resolving, and validating JWT tokens for authenticated users.
+ */
 @Service
 public class JwtTokenProvider {
 
@@ -41,11 +44,20 @@ public class JwtTokenProvider {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Initializes the JWT secret after bean creation.
+     */
     @PostConstruct
     private void init() {
         jwtSecret = generateSecretKey(secret);
     }
 
+    /**
+     * Generates a JWT token for the given Authentication object.
+     *
+     * @param authentication The authenticated user's details.
+     * @return A signed JWT token.
+     */
     public String generateToken(Authentication authentication) {
         UserDetails userPrincipal = (UserDetails) authentication.getPrincipal();
         Date now = timeProvider.now();
@@ -60,15 +72,33 @@ public class JwtTokenProvider {
                 .compact();
     }
 
+    /**
+     * Resolves the JWT token from the request, checking headers first and then cookies.
+     *
+     * @param request The HttpServletRequest to extract the token from.
+     * @return The JWT token or null if not found.
+     */
     public String resolveToken(HttpServletRequest request) {
         String token = extractTokenFromHeader(request);
         return token != null ? token : extractTokenFromCookies(request);
     }
 
+    /**
+     * Extracts the username from the JWT token.
+     *
+     * @param token The JWT token.
+     * @return The username (subject) inside the token.
+     */
     public String getUsername(String token) {
         return parseToken(token).getSubject();
     }
 
+    /**
+     * Validates the JWT token for correct signature and expiration.
+     *
+     * @param token The JWT token to validate.
+     * @return true if valid, false otherwise.
+     */
     public boolean validateToken(String token) {
         try {
             parseToken(token);
@@ -78,6 +108,12 @@ public class JwtTokenProvider {
         }
     }
 
+    /**
+     * Builds an Authentication object (UserDetails + authorities) from the token.
+     *
+     * @param token The JWT token.
+     * @return An Authentication object representing the user.
+     */
     public Authentication getAuthentication(String token) {
         Claims claims = parseToken(token);
         Collection<? extends GrantedAuthority> authorities = extractAuthorities(claims);
@@ -123,6 +159,7 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
+    @SuppressWarnings("unchecked")
     private Collection<? extends GrantedAuthority> extractAuthorities(Claims claims) {
         List<String> roles = (List<String>) claims.get("roles");
         return roles.stream()

@@ -6,7 +6,7 @@ please read ['My Idea'](#My-Idea) section
 
 # My Idea
 
-I imagine going to a wholesale store like Makro. To start shopping, I first need to register as a client (`POST /api/auth/beClient`) to get a Client card. Once registered, I can put Client card to a Cart and if I authenticate (`POST /api/auth/takeCart`) and receive a Cart that allows me to shopping and add items.
+I imagine going to a wholesale store like Makro. To start shopping, I first need to register as a client (`POST /api/auth/beClient`) to get a Client card. Once registered, I can put Client card to a Cart and if I authenticate (`POST /api/auth/takeCart`) and receive a Cart that allows me to go shopping and add items to a Cart.
 
 Once authenticated, I can:
 - Add items to my cart using `POST /api/cart/addItem`.

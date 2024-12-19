@@ -63,4 +63,13 @@ public class ReceiptDiscountDto {
             return new ReceiptDiscountDto(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ReceiptDiscountDto{" +
+                "totalPriceBeforeDiscounts=" + totalPriceBeforeDiscounts +
+                ", totalDiscount=" + totalDiscount +
+                ", totalPriceWithDiscounts=" + totalPriceWithDiscounts +
+                '}';
+    }
 }

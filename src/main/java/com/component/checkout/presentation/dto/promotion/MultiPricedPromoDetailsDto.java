@@ -78,4 +78,14 @@ public class MultiPricedPromoDetailsDto {
             return new MultiPricedPromoDetailsDto(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "MultiPricedPromoDetailsDto{" +
+                "singleNormalPrice=" + singleNormalPrice +
+                ", singleSpecialPrice=" + singleSpecialPrice +
+                ", quantityNormalPrice=" + quantityNormalPrice +
+                ", quantitySpecialPrice=" + quantitySpecialPrice +
+                '}';
+    }
 }

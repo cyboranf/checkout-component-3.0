@@ -45,4 +45,12 @@ public class BundleDiscountsPromoDto {
             return new BundleDiscountsPromoDto(this);
         }
     }
+
+    @Override
+    public String toString() {
+        return "BundleDiscountsPromoDto{" +
+                "totalBundlePromoQuantity=" + totalBundlePromoQuantity +
+                ", totalBundleDiscount=" + totalBundleDiscount +
+                '}';
+    }
 }
