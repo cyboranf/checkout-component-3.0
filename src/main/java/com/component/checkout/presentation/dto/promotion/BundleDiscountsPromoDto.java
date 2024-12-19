@@ -5,21 +5,27 @@ public class BundleDiscountsPromoDto {
     private int totalBundlePromoQuantity;
     private double totalBundleDiscount;
 
-    public int getTotalBundlePromoQuantity() {
-        return totalBundlePromoQuantity;
+    private BundleDiscountsPromoDto(Builder builder) {
+        this.totalBundlePromoQuantity = builder.totalBundlePromoQuantity;
+        this.totalBundleDiscount = builder.totalBundleDiscount;
     }
 
     public void setTotalBundlePromoQuantity(int totalBundlePromoQuantity) {
         this.totalBundlePromoQuantity = totalBundlePromoQuantity;
     }
 
+    public void setTotalBundleDiscount(double totalBundleDiscount) {
+        this.totalBundleDiscount = totalBundleDiscount;
+    }
+
+    public int getTotalBundlePromoQuantity() {
+        return totalBundlePromoQuantity;
+    }
+
     public double getTotalBundleDiscount() {
         return totalBundleDiscount;
     }
 
-    public void setTotalBundleDiscount(double totalBundleDiscount) {
-        this.totalBundleDiscount = totalBundleDiscount;
-    }
 
     public static class Builder {
         private int totalBundlePromoQuantity;
@@ -36,10 +42,15 @@ public class BundleDiscountsPromoDto {
         }
 
         public BundleDiscountsPromoDto build() {
-            BundleDiscountsPromoDto promoDto = new BundleDiscountsPromoDto();
-            promoDto.setTotalBundlePromoQuantity(this.totalBundlePromoQuantity);
-            promoDto.setTotalBundleDiscount(this.totalBundleDiscount);
-            return promoDto;
+            return new BundleDiscountsPromoDto(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "BundleDiscountsPromoDto{" +
+                "totalBundlePromoQuantity=" + totalBundlePromoQuantity +
+                ", totalBundleDiscount=" + totalBundleDiscount +
+                '}';
     }
 }

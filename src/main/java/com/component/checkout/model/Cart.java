@@ -33,7 +33,8 @@ public class Cart {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    public Cart() {}
+    public Cart() {
+    }
 
     private Cart(Builder builder) {
         this.id = builder.id;
@@ -111,6 +112,7 @@ public class Cart {
     }
 
     public static class Builder {
+
         private Long id;
         private List<CartItem> cartItems;
         private double totalPriceWithDiscounts;

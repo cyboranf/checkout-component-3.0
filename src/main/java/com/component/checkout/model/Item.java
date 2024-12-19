@@ -49,6 +49,10 @@ public class Item {
         return normalPrice;
     }
 
+    public Set<BundleDiscount> getBundleDiscounts() {
+        return bundleDiscounts;
+    }
+
     public int getRequiredQuantityForSpecialPrice() {
         return requiredQuantityForSpecialPrice;
     }
@@ -75,10 +79,6 @@ public class Item {
 
     public void setSpecialPrice(double specialPrice) {
         this.specialPrice = specialPrice;
-    }
-
-    public Set<BundleDiscount> getBundleDiscounts() {
-        return bundleDiscounts;
     }
 
     public void setBundleDiscounts(Set<BundleDiscount> bundleDiscounts) {

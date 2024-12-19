@@ -10,7 +10,7 @@
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="issued_at" type="TIMESTAMP">
+            <column name="issued_at" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="total_amount" type="DECIMAL(10, 2)">

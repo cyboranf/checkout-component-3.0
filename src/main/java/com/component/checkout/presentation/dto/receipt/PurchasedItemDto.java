@@ -11,55 +11,71 @@ public class PurchasedItemDto {
     private double priceWithDiscounts;
     private ItemDiscountDto itemDiscount;
 
-    public String getItemName() {
-        return itemName;
+    private PurchasedItemDto(Builder builder) {
+        this.itemName = builder.itemName;
+        this.quantity = builder.quantity;
+        this.pricePerOneItem = builder.pricePerOneItem;
+        this.priceBeforeDiscounts = builder.priceBeforeDiscounts;
+        this.priceWithDiscounts = builder.priceWithDiscounts;
+        this.itemDiscount = builder.itemDiscount;
     }
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
     }
 
-    public int getQuantity() {
-        return quantity;
-    }
-
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public double getPricePerOneItem() {
-        return pricePerOneItem;
     }
 
     public void setPricePerOneItem(double pricePerOneItem) {
         this.pricePerOneItem = pricePerOneItem;
     }
 
-    public double getPriceBeforeDiscounts() {
-        return priceBeforeDiscounts;
-    }
-
-    public void setPriceBeforeDiscounts(double priceBeforeDiscounts) {
-        this.priceBeforeDiscounts = priceBeforeDiscounts;
-    }
-
-    public double getPriceWithDiscounts() {
-        return priceWithDiscounts;
+    public void setItemDiscount(ItemDiscountDto itemDiscount) {
+        this.itemDiscount = itemDiscount;
     }
 
     public void setPriceWithDiscounts(double priceWithDiscounts) {
         this.priceWithDiscounts = priceWithDiscounts;
     }
 
+    public void setPriceBeforeDiscounts(double priceBeforeDiscounts) {
+        this.priceBeforeDiscounts = priceBeforeDiscounts;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+
+    public double getPricePerOneItem() {
+        return pricePerOneItem;
+    }
+
+
+    public double getPriceBeforeDiscounts() {
+        return priceBeforeDiscounts;
+    }
+
+
+    public double getPriceWithDiscounts() {
+        return priceWithDiscounts;
+    }
+
+
     public ItemDiscountDto getItemDiscount() {
         return itemDiscount;
     }
 
-    public void setItemDiscount(ItemDiscountDto itemDiscount) {
-        this.itemDiscount = itemDiscount;
-    }
 
     public static class Builder {
+
         private String itemName;
         private int quantity;
         private double pricePerOneItem;
@@ -98,14 +114,19 @@ public class PurchasedItemDto {
         }
 
         public PurchasedItemDto build() {
-            PurchasedItemDto purchasedItemDto = new PurchasedItemDto();
-            purchasedItemDto.setItemName(this.itemName);
-            purchasedItemDto.setQuantity(this.quantity);
-            purchasedItemDto.setPricePerOneItem(this.pricePerOneItem);
-            purchasedItemDto.setPriceBeforeDiscounts(this.priceBeforeDiscounts);
-            purchasedItemDto.setPriceWithDiscounts(this.priceWithDiscounts);
-            purchasedItemDto.setItemDiscount(this.itemDiscount);
-            return purchasedItemDto;
+            return new PurchasedItemDto(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "PurchasedItemDto{" +
+                "itemName='" + itemName + '\'' +
+                ", quantity=" + quantity +
+                ", pricePerOneItem=" + pricePerOneItem +
+                ", priceBeforeDiscounts=" + priceBeforeDiscounts +
+                ", priceWithDiscounts=" + priceWithDiscounts +
+                ", itemDiscount=" + itemDiscount +
+                '}';
     }
 }

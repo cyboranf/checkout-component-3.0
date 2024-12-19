@@ -6,12 +6,23 @@ import com.component.checkout.service.UserService;
 import com.component.checkout.shared.utils.ResponseUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * The AuthController handles user authentication and registration-related endpoints.
+
+ * Endpoints:
+ * - POST /api/auth/beClient: Register a new client account.
+ * - POST /api/auth/bringCart: Authenticate an existing user and "bring" their cart (log in).
+ */
 @RestController
 @RequestMapping("/api/auth")
-public class AuthController {
+class AuthController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService authService;
 
@@ -19,8 +30,12 @@ public class AuthController {
         this.authService = authService;
     }
 
+    /**
+     * Handles OPTIONS requests for the auth resource, providing allowed methods and headers.
+     */
     @RequestMapping(method = RequestMethod.OPTIONS)
     public ResponseEntity<Void> options() {
+        LOGGER.info("Received OPTIONS request at /api/auth");
         return ResponseEntity.ok()
                 .header("Allow", "OPTIONS, POST")
                 .header("Access-Control-Allow-Methods", "POST, OPTIONS")
@@ -29,15 +44,34 @@ public class AuthController {
                 .build();
     }
 
-    @PostMapping("/login")
+    /**
+     * Authenticates an existing user and returns their authentication token, effectively "bringing" their cart.
+
+     * Path: POST /api/auth/bringCart
+
+     * @param authRequest The request containing the user's login and password.
+     * @param response    The HttpServletResponse used to set a JWT cookie.
+     * @return An AuthResponse with the user's data and token.
+     */
+    @PostMapping("/bringCart")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody AuthRequest authRequest,
                                               HttpServletResponse response) {
+        LOGGER.info("Received request to bring cart for user login: {}", authRequest.login());
         AuthResponse authResponse = authService.login(authRequest, response);
         return ResponseUtil.buildSuccessResponseAuth(authResponse, "Login successful.");
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRequest authRequest) {
+    /**
+     * Registers a new client (user) account.
+
+     * Path: POST /api/auth/beClient
+
+     * @param authRequest The request containing the user's chosen login and password.
+     * @return An AuthResponse with the new user's data.
+     */
+    @PostMapping("/beClient")
+    ResponseEntity<AuthResponse> register(@Valid @RequestBody AuthRequest authRequest) {
+        LOGGER.info("Received request to register new client with login: {}", authRequest.login());
         AuthResponse authResponse = authService.register(authRequest);
         return ResponseUtil.buildSuccessResponseAuth(authResponse, "Registration successful.");
     }

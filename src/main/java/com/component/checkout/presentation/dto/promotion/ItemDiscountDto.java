@@ -5,23 +5,30 @@ public class ItemDiscountDto {
     private String bundleDiscountDetails;
     private String multiPricedDiscountDetails;
 
-    public String getBundleDiscountDetails() {
-        return bundleDiscountDetails;
+    private ItemDiscountDto(Builder builder) {
+        this.bundleDiscountDetails = builder.bundleDiscountDetails;
+        this.multiPricedDiscountDetails = builder.multiPricedDiscountDetails;
     }
 
     public void setBundleDiscountDetails(String bundleDiscountDetails) {
         this.bundleDiscountDetails = bundleDiscountDetails;
     }
 
-    public String getMultiPricedDiscountDetails() {
-        return multiPricedDiscountDetails;
-    }
-
     public void setMultiPricedDiscountDetails(String multiPricedDiscountDetails) {
         this.multiPricedDiscountDetails = multiPricedDiscountDetails;
     }
 
+    public String getBundleDiscountDetails() {
+        return bundleDiscountDetails;
+    }
+
+    public String getMultiPricedDiscountDetails() {
+        return multiPricedDiscountDetails;
+    }
+
+
     public static class Builder {
+
         private String bundleDiscountDetails;
         private String multiPricedDiscountDetails;
 
@@ -36,10 +43,15 @@ public class ItemDiscountDto {
         }
 
         public ItemDiscountDto build() {
-            ItemDiscountDto itemDiscountDto = new ItemDiscountDto();
-            itemDiscountDto.setBundleDiscountDetails(this.bundleDiscountDetails);
-            itemDiscountDto.setMultiPricedDiscountDetails(this.multiPricedDiscountDetails);
-            return itemDiscountDto;
+            return new ItemDiscountDto(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ItemDiscountDto{" +
+                "bundleDiscountDetails='" + bundleDiscountDetails + '\'' +
+                ", multiPricedDiscountDetails='" + multiPricedDiscountDetails + '\'' +
+                '}';
     }
 }
