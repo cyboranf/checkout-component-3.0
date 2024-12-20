@@ -1,0 +1,6 @@
+com/component/checkout/service/UserServiceTest.class
+com/component/checkout/Cc3ApplicationTests.class
+com/component/checkout/AcceptanceTests.class
+com/component/checkout/infrastructure/repository/RoleRepositoryTest.class
+com/component/checkout/presentation/controller/AuthControllerIntegrationTest.class
+com/component/checkout/infrastructure/repository/UserRepositoryTest.class
