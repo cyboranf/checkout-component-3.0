@@ -17,10 +17,16 @@ To start, clone the repository from GitHub:
 git clone https://github.com/cyboranf/checkout-component-3.0.git
 cd checkout-component-3.0
 ```
-## Build the Application
-```bash
-mvn clean package
-````
+
+## application.properties
+
+Change these fields
+```properties
+spring.datasource.username=root
+spring.datasource.password=mySQLpassword1.
+```
+
+
 ## Run Tests
 To verify that everything is working correctly, run the test suite:
 ```bash

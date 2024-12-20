@@ -1,0 +1,6 @@
+/home/cyboran/Pulpit/checkout-component-3.0/src/test/java/com/component/checkout/Cc3ApplicationTests.java
+/home/cyboran/Pulpit/checkout-component-3.0/src/test/java/com/component/checkout/infrastructure/repository/RoleRepositoryTest.java
+/home/cyboran/Pulpit/checkout-component-3.0/src/test/java/com/component/checkout/infrastructure/repository/UserRepositoryTest.java
+/home/cyboran/Pulpit/checkout-component-3.0/src/test/java/com/component/checkout/service/UserServiceTest.java
+/home/cyboran/Pulpit/checkout-component-3.0/src/test/java/com/component/checkout/presentation/controller/AuthControllerIntegrationTest.java
+/home/cyboran/Pulpit/checkout-component-3.0/src/test/java/com/component/checkout/AcceptanceTests.java

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+    http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <include file="changeset/01-create-user.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/02-create-role.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/03-create-user-role.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/04-insert-role.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/05-insert-user.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/06-create-item.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/07-insert-item.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/08-create-cart.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/09-create-cart-item.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/10-create-receipt.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/11-create-bundle-discount.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/12-insert-bundle-discount.xml" relativeToChangelogFile="true"/>
+    <include file="changeset/13-add-cart-user-relation.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
