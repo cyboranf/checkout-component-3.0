@@ -67,13 +67,7 @@ Once the application is running, you can access the following endpoints:
 
 - **Add an item to the cart**:
   - `POST http://localhost:8080/api/cart/add-item`
-    - Example request body:
-      ```json
-      {
-          "itemId": 3,
-          "quantity": 5
-      }
-      ```
+    - with request param: itemId and quantity
     - Or directly via query parameters:
       `POST http://localhost:8080/api/cart/add-item?itemId=3&quantity=5`
     - Example response:
